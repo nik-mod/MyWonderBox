@@ -18,8 +18,8 @@ export const packagingDesigns = {
   'pink-berry': {
     title: 'ყუთი გოგონებისთვის',
     productName: 'MyWonderBox — გოგოებისთვის',
-    label: 'ვარდისფერი და ფუქსიასფერი',
-    alt: 'MyWonderBox-ის ვარდისფერი სიურპრიზის ყუთი ფუქსიასფერი ლენტით, პეპლისა და სასახლის ნახატებით',
+    label: 'ვარდისფერი და მუქი ვარდისფერი',
+    alt: 'MyWonderBox-ის ვარდისფერი სიურპრიზის ყუთი მუქი ვარდისფერი ლენტით, პეპლისა და სასახლის ნახატებით',
     storedSlug: 'joybox-berry',
     slug: 'mywonderbox-pink',
     image: '/brand/mywonderbox/box-pink.webp',

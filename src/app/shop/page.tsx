@@ -1,11 +1,9 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
-import { ChevronLeft } from 'lucide-react';
 import { connection } from 'next/server';
 import { getProducts } from '@/lib/catalog';
 import { ShopExperience } from '@/components/shop-experience';
+import { MessengerOrderLink } from '@/components/messenger-order-link';
 import { storefrontMetadata } from '@/lib/metadata';
-import { ordersOpeningLater } from '@/lib/preview-copy';
 import './shop.css';
 
 export const metadata = storefrontMetadata(
@@ -30,9 +28,8 @@ export default function ShopPage() {
   return (
     <main className="page-shell container shop-editions" id="main">
       <header className="commerce-heading">
-        <Link href="/" className="commerce-back"><ChevronLeft size={16} aria-hidden="true" /> მთავარი</Link>
-        <h1>რომელ სიურპრიზს აირჩევ?</h1>
-        <p>{ordersOpeningLater}</p>
+        <h1>სიურპრიზის ყუთები</h1>
+        <MessengerOrderLink />
       </header>
       <Suspense fallback={<ShopCatalogLoading />}><ShopCatalog /></Suspense>
     </main>

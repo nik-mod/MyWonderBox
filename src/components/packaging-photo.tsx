@@ -1,15 +1,14 @@
 import { packagingDesigns } from '@/lib/packaging';
 import type { Packaging, Product } from '@/lib/types';
 
-export function PackagingPhoto({ color, loading = 'lazy', detail = false }: {
-  color: Packaging; loading?: 'lazy' | 'eager'; detail?: boolean;
+export function PackagingPhoto({ color, loading = 'lazy' }: {
+  color: Packaging; loading?: 'lazy' | 'eager';
 }) {
   const design = packagingDesigns[color];
-  const [width, height] = detail ? design.detailSize : [1440, 960];
   return (
     <picture>
-      <source media="(max-width: 740px)" srcSet={detail ? design.detailCompact : design.compact} />
-      <img src={detail ? design.detail : design.image} alt={design.alt} width={width} height={height} loading={loading} decoding="async" />
+      <source media="(max-width: 740px)" srcSet={design.compact} />
+      <img src={design.image} alt={design.alt} width={1440} height={960} loading={loading} decoding="async" />
     </picture>
   );
 }

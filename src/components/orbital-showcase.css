@@ -98,23 +98,16 @@
     font-size: clamp(35px, 3.58vw, 68px);
     line-height: 1.075;
     letter-spacing: -.035em;
+    margin-bottom: clamp(12px, 2.2svh, 23px);
     overflow-wrap: anywhere;
   }
 
   .orbital-edition h3 span { display: block; }
 
-  .orbital-edition:focus-within :is(h3 span, .edition-description, .edition-price, .edition-action) {
+  .orbital-edition:focus-within :is(h3 span, .edition-price, .edition-action) {
     clip-path: none !important;
     transform: none !important;
     opacity: 1 !important;
-  }
-
-  .orbital-edition .edition-description {
-    max-width: 32ch;
-    margin: clamp(16px, 2.35svh, 27px) 0 13px;
-    color: #344058;
-    font-size: clamp(14px, 1.18vw, 18px);
-    line-height: 1.68;
   }
 
   .orbital-edition .edition-price { margin: 0 0 13px; }
@@ -134,16 +127,6 @@
   .orbital-edition .edition-action:hover { background: #f1b80f; }
   .orbital-stage[data-active='1'] .orbital-edition .edition-action { background: #922e54; color: #fff8f2; }
   .orbital-stage[data-active='1'] .orbital-edition .edition-action:hover { background: #7c2346; }
-
-  .orbital-note {
-    max-width: 38ch;
-    margin-top: clamp(18px, 3.8svh, 42px);
-    color: #504657;
-    font-size: 11px;
-    line-height: 1.6;
-  }
-
-  .orbital-note a { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .edition-static { padding-block: clamp(48px, 7vw, 106px); }

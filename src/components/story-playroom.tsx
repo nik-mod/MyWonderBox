@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { ArrowUpRight, Hand } from 'lucide-react';
+import { Hand } from 'lucide-react';
 import type { MouseEvent } from 'react';
 import './story-playroom.css';
 
@@ -49,9 +48,7 @@ export function StoryPlayroom() {
   return (
     <section className="brand-story story-edition story-playroom" id="unboxing" aria-labelledby="toy-story-heading">
       <div className="story-edition-copy">
-        <h2 id="toy-story-heading">პირველი აღმოჩენა.<br /><em>პირველი თამაში.</em></h2>
-        <p>ყუთის გახსნა მხოლოდ დასაწყისია. მერე ერთად არჩევთ, რით ითამაშოთ და რას შექმნით.</p>
-        <Link href="/about" className="text-link">გაიცანი MyWonderBox <ArrowUpRight size={19} aria-hidden="true" /></Link>
+        <h2 id="toy-story-heading">სათამაშოების მაგალითები</h2>
         <div className="story-play-hint" id="toy-story-controls"><Hand size={16} aria-hidden="true" /> შეეხე სათამაშოებს</div>
       </div>
       <div className="story-play-floor" role="group" aria-labelledby="toy-story-controls">

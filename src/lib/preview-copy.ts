@@ -1,6 +1,10 @@
-export const ordersOpeningLater = 'შეკვეთების მიღება მოგვიანებით დაიწყება. მანამდე შეგიძლია დაათვალიერო ყუთები.';
-export const plannedDelivery = 'შეკვეთების მიღების დაწყების შემდეგ საქართველოს მთელ ტერიტორიაზე მიწოდება უფასო იქნება.';
+export const messengerOrdering = 'აირჩიე ყუთი და მოგვწერე Messenger-ში. შეკვეთის დეტალებს ჩატში შევათანხმებთ.';
+export const plannedDelivery = 'საქართველოს მასშტაბით უფასო მიწოდებაა დაგეგმილი.';
 export const previewPhone = { href: 'tel:+995579284889', label: '579 284 889' };
+export const previewFacebook = {
+  href: 'https://www.facebook.com/profile.php?id=61596855447128',
+  messengerHref: 'https://m.me/61596855447128',
+};
 export const previewContentCategories = ['სათამაშოები', 'თამაშები', 'შემოქმედებითი ნივთები'] as const;
 export const previewSafetyNote = 'ყუთი შეიძლება შეიცავდეს მცირე ნაწილებს. თამაშამდე შეამოწმე თითოეული ნივთის ასაკობრივი ნიშნული და უსაფრთხოების ინსტრუქცია.';
-export const previewReturnsStatus = 'ონლაინ შეკვეთები და გადახდები ჯერ დახურულია. დაბრუნების ვადები და მოთხოვნის წარდგენის წესი შეკვეთების გახსნამდე გამოქვეყნდება.';
+export const previewReturnsStatus = 'დაბრუნების ვადები და მოთხოვნის წარდგენის წესი შეკვეთამდე დააზუსტე Messenger-ში.';

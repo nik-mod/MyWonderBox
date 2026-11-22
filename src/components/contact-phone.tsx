@@ -17,7 +17,7 @@ export function ContactPhone() {
 
   return (
     <div className="contact-phone-actions">
-      <a className="button button-yellow contact-phone" href={previewPhone.href}>
+      <a className="button button-outline contact-phone" href={previewPhone.href}>
         <Phone size={19} aria-hidden="true" /> {previewPhone.label}
       </a>
       <button type="button" className="contact-copy-phone" onClick={copyPhone}

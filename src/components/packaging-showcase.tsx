@@ -12,9 +12,9 @@ import { PackagingPhoto } from './packaging-photo';
 import './orbital-showcase.css';
 
 const showcaseMotion = '(min-width: 1040px) and (min-height: 660px) and (pointer: fine) and ' + allowMotion;
-const editions = {
-  'navy-yellow': { title: 'ბიჭებისთვის', copy: 'თავგადასავლები, თამაშები და მოულოდნელი სიურპრიზები ერთ ყუთში.' },
-  'pink-berry': { title: 'გოგონებისთვის', copy: 'ფერადი აღმოჩენები, ფანტაზია და დაუვიწყარი სიურპრიზები.' },
+const editionTitles = {
+  'navy-yellow': 'ბიჭებისთვის',
+  'pink-berry': 'გოგონებისთვის',
 };
 const stops = [.39, .915];
 const editionChange = .624;
@@ -26,12 +26,10 @@ function EditionImage({ color, product }: { color: Packaging; product?: Product 
 }
 
 function EditionDetails({ color, product }: { color: Packaging; product?: Product }) {
-  const edition = editions[color];
   const href = product ? productHref(product.slug) : `/shop?packaging=${color}`;
   return (
     <>
-      <h3><span>ყუთი</span>{' '}<span>{edition.title}</span></h3>
-      <p className="edition-description">{edition.copy}</p>
+      <h3><span>ყუთი</span>{' '}<span>{editionTitles[color]}</span></h3>
       {product && <p className="edition-price">{formatMoney(product.price_minor)}</p>}
       <Link href={href} className="edition-action">
         {product ? 'ყუთის ნახვა' : 'შეფუთვის ნახვა'} <ArrowRight size={20} aria-hidden="true" />
@@ -128,7 +126,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
       const start = context.add('startOrbitalShowcase', () => {
         const pose: OrbitalPose = { angle: -.14, camera: 1.13, blush: 0, navyLid: 0, navyToys: 0, pinkLid: 0, pinkToys: 0 };
         const title = panels.map(panel => panel.querySelectorAll('h3 span'));
-        const details = panels.map(panel => panel.querySelectorAll('.edition-description, .edition-price, .edition-action'));
+        const details = panels.map(panel => panel.querySelectorAll('.edition-price, .edition-action'));
         setEdition(0);
         studio?.draw(pose, true);
         section.dataset.orbit = 'ready';
@@ -222,10 +220,10 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
   };
 
   return (
-    <section className="edition-showcase" id="collection" ref={sectionRef} aria-label="რომელი ყუთი გინდა გახსნა?">
+    <section className="edition-showcase" id="collection" ref={sectionRef} aria-label="სიურპრიზის ყუთები">
       <div className="edition-static container">
         <div className="collection-intro">
-          <h2>რომელი ყუთი გინდა გახსნა?</h2>
+          <h2>სიურპრიზის ყუთები</h2>
           <Link href="/shop" className="edition-catalog-link">ყველა ყუთი <ArrowUpRight size={18} aria-hidden="true" /></Link>
         </div>
         <div className="collection-editions">
@@ -240,7 +238,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
                 <div className="collection-edition-copy">
                   <h3>{packagingDesigns[color].title}</h3>
                   {product && <p>{formatMoney(product.price_minor)}</p>}
-                  <Link href={href} className="edition-action">გაიცანი ყუთი <ArrowRight size={18} aria-hidden="true" /></Link>
+                  <Link href={href} className="edition-action">ყუთის ნახვა <ArrowRight size={18} aria-hidden="true" /></Link>
                 </div>
               </article>
             );
@@ -250,7 +248,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
 
       <div className="orbital-stage" ref={stageRef}>
         <div className="orbital-header">
-          <h2>რომელი ყუთი გინდა გახსნა?</h2>
+          <h2>სიურპრიზის ყუთები</h2>
           <Link href="/shop" className="edition-catalog-link">ყველა ყუთი <ArrowUpRight size={18} aria-hidden="true" /></Link>
         </div>
         <div className="orbital-layout">
@@ -271,9 +269,6 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
                 </article>
               ))}
             </div>
-            <p className="orbital-note">სათამაშოები საილუსტრაციოა. ზუსტი შიგთავსი სიურპრიზია.{' '}
-              <a href="/brand/orbit-models/credits.txt" target="_blank" rel="noopener">3D მოდელების წყაროები</a>
-            </p>
           </div>
         </div>
       </div>

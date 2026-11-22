@@ -10,6 +10,7 @@ test('legacy catalog and saved cart data adopt the correct edition while keeping
   const original = {
     ...launchProducts[0], name: 'JOYBOX — ბიჭებისთვის', description: 'ჯოიბოქსის ყუთი',
     image_url: 'https://store.example.test/brand/box-navy.webp', stock: 7, price_minor: 3100,
+    images: ['https://store.example.test/brand/mywonderbox/box-blue-detail.webp'],
   };
   const product = catalogProduct(original);
   assert.equal(storedProductSlug('mywonderbox-blue'), original.slug);
@@ -18,7 +19,7 @@ test('legacy catalog and saved cart data adopt the correct edition while keeping
     [original.id, original.slug, 7, 3100]);
   assert.equal(product.name, 'MyWonderBox — ბიჭებისთვის');
   assert.equal(product.description, 'ჩემი ვანდერბოქსის ყუთი');
-  assert.deepEqual([product.image_url, ...product.images], [packagingDesigns['navy-yellow'].image, packagingDesigns['navy-yellow'].detail]);
+  assert.deepEqual([product.image_url, ...product.images], [packagingDesigns['navy-yellow'].image]);
   assert.equal(catalogProduct({ ...original, slug: 'custom-edition' }).image_url, original.image_url);
   assert.equal(brandCopy('Joy Box / WonderBox / MyWonderBox'), 'MyWonderBox / MyWonderBox / MyWonderBox');
 });
@@ -34,8 +35,8 @@ test('rebrand SQL updates only matching editions and leaves their commerce data 
       image_url text, images text[], packaging text, price_minor integer, stock integer, published boolean
     );
     insert into products values
-      (1, 'joybox-navy', 'JOYBOX', 'ჯოიბოქსის ყუთი', 'JOYBOX', 'https://store.example.test/blue.webp', '{}', 'navy-yellow', 3100, 7, true),
-      (2, 'joybox-berry', 'JOYBOX', 'ჯოიბოქსის ყუთი', 'JOYBOX', 'https://store.example.test/pink.webp', '{}', 'pink-berry', 3200, 4, false),
+      (1, 'joybox-navy', 'JOYBOX', 'ჯოიბოქსის ყუთი', 'JOYBOX', 'https://store.example.test/blue.webp', array['https://store.example.test/brand/mywonderbox/box-blue-detail.webp'], 'navy-yellow', 3100, 7, true),
+      (2, 'joybox-berry', 'JOYBOX', 'ჯოიბოქსის ყუთი', 'JOYBOX', 'https://store.example.test/pink.webp', array['https://store.example.test/brand/mywonderbox/box-pink-detail.webp'], 'pink-berry', 3200, 4, false),
       (3, 'independent-edition', 'Other', 'Other', 'Other', 'https://store.example.test/other.webp', '{}', 'navy-yellow', 4000, 2, true);`);
     await db.exec(query);
     await db.exec(query);
@@ -47,8 +48,8 @@ test('rebrand SQL updates only matching editions and leaves their commerce data 
     const { rows } = await db.query<{ name: string; image_url: string; images: string[] }>('select name, image_url, images from products order by id');
     assert.deepEqual(rows.map(({ image_url }) => new URL(image_url).pathname),
       [packagingDesigns['navy-yellow'].image, packagingDesigns['pink-berry'].image, '/other.webp']);
+    assert.deepEqual(rows.slice(0, 2).map(({ images }) => images), [[], []]);
     assert.equal(rows[1].name, 'MyWonderBox — გოგოებისთვის');
-    assert.equal(new URL(rows[1].images[0]).pathname, packagingDesigns['pink-berry'].detail);
   } finally {
     await db.close();
   }

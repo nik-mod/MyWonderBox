@@ -41,9 +41,6 @@
 .home-v2 .why-edition { display: grid; grid-template-columns: .9fr 1.2fr; gap: 65px; padding-block: clamp(55px,7vw,105px); }
 .home-v2 .why-edition .section-heading { display: block; }
 .home-v2 .why-edition h2 { margin: 18px 0; font-size: clamp(35px,4.5vw,64px); }
-.why-edition .section-heading p { max-width: 30ch; color: var(--muted); }
-.why-age { display: block; font-size: 60px; letter-spacing: -.04em; margin-top: 28px; color: #ac7b16; }
-.why-age small { display: block; font-size: 12px; letter-spacing: 0; }
 .home-v2 .why-edition li { padding: 26px 0; }
 .home-v2 .why-edition li > svg { width: 38px; height: 38px; flex-shrink: 0; background: #ffcf30; padding: 8px; border-radius: 50%; }
 .home-v2 .faq-edition h2 { font-size: clamp(32px,3.6vw,54px); }
@@ -81,7 +78,6 @@
  .story-packaging { min-height: 0; max-width: 550px; }
  .story-facts { font-size: 11px; gap: 12px; }
  .story-facts b { display: block; margin-bottom: 8px; }
- .why-age { font-size: 42px; }
  .faq-page-edition .page-header { position: static; margin: 0; }
  .information-aside { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 20px; }
  .information-aside > .eyebrow { grid-column: 1/-1; }
@@ -113,23 +109,15 @@
 .about-still { margin:0; align-self:stretch; display:flex; flex-direction:column; justify-content:center; background:#f4e3d0; }
 .about-still img { width:100%; height:auto; }
 .about-still figcaption { display:flex; justify-content:space-between; padding:22px 28px; font-size:11px; border-top:1px solid #142c4925; }
-.about-manifesto { display:grid; grid-template-columns:1fr 1.2fr; gap:18px 70px; padding:80px 0 60px; }
-.about-manifesto > .eyebrow { grid-column:1/-1; }
-.about-manifesto h2 { font-size:clamp(29px,3.2vw,46px); line-height:1.3; }
-.about-manifesto p { color:var(--muted); line-height:1.9; max-width:58ch; padding-top:4px; }
 .about-principles { display:grid; grid-template-columns:repeat(3,1fr); border-block:1px solid #142c4930; }
 .about-principles article { padding:30px; border-right:1px solid #142c4930; }
 .about-principles article:first-child { padding-left:0; }
 .about-principles article:last-child { border:0; }
 .about-principles svg { width:30px; height:30px; stroke-width:1.4; margin-bottom:26px; }
-.about-principles span { display:block; font-size:11px; color:#94601e; }
-.about-principles h3 { font-size:23px; margin:12px 0; }
-.about-principles p { color:var(--muted); font-size:14px; line-height:1.8; }
+.about-principles p { color:var(--muted); font-size:var(--text-body); line-height:1.7; }
 .about-closing { margin-top:60px; display:grid; grid-template-columns:1fr 1fr; align-items:center; background:#f1dce0; }
 .about-closing img { width:100%; height:auto; }
-.model-credits-link { margin-top: 24px; }
 .about-closing > div { padding:35px; }
-.about-closing h2 { font-size:clamp(30px,3.8vw,54px); line-height:1.25; margin:20px 0 30px; }
 .home-v2 .story-edition-grid { grid-template-columns:.85fr 1.35fr; gap:45px; }
 .story-packaging { min-height:0; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:12px; padding:0; }
 .story-box { width:100%; border-radius:0; }
@@ -142,7 +130,6 @@
 .home-v2 .why-edition li { position:relative; padding:28px 0; }
 .home-v2 .why-edition li > svg { display:none; }
 .home-v2 .why-edition li h3 { font-size:24px; margin-bottom:12px; }
-.why-age { border-top:1px solid #142c4925; padding-top:25px; max-width:300px; }
 .home-v2 .faq-edition { background:#102b4b; color:#fff6e7; padding:45px; margin-bottom:60px; gap:65px; }
 .home-v2 .faq-edition a, .home-v2 .faq-edition p { color:#fff6e7; }
 .home-v2 .faq-edition details { border-color:#ffffff30; }
@@ -151,7 +138,6 @@
 .home-v2 .faq-edition summary::after { color:#ffcb2a; }
 .faq-page-edition .page-header { padding:32px 30px 40px; background:#102b4b; color:#fff6e7; }
 .faq-page-edition .page-header .eyebrow { color:#ffcb2a; }
-.faq-page-edition .page-header p { color:#ddd7c9; }
 .faq-page-edition .page-header h1 { font-size:clamp(34px,3.5vw,50px); }
 .faq-explorer { min-width:0; }
 .faq-search { display:flex; align-items:center; gap:14px; border-bottom:2px solid #142b4b; margin-bottom:20px; padding:15px 4px; }
@@ -184,8 +170,7 @@
 .shop-editions .product-item .button-outline { border:0; border-bottom:1px solid #142c4930; border-radius:0; justify-content:space-between; padding-inline:0; }
 .shop-editions .product-item .button-yellow { margin-top:15px; }
 @media(max-width:850px) {
- .about-lead,.about-manifesto,.about-closing,.home-v2 .story-edition-grid,.home-v2 .why-edition,.contact-edition .prose { grid-template-columns:1fr; }
- .about-manifesto { gap:22px; padding-block:45px; }
+ .about-lead,.about-closing,.home-v2 .story-edition-grid,.home-v2 .why-edition,.contact-edition .prose { grid-template-columns:1fr; }
  .about-principles { grid-template-columns:1fr; }
  .about-principles article, .about-principles article:first-child { border-right:0; border-bottom:1px solid #142c4925; padding:25px 0; }
  .about-principles svg { float:right; margin:0; }
@@ -204,26 +189,19 @@
 @media(max-width:540px) {
  .about-lead-copy { padding:25px; }
  .about-lead h1 { font-size:32px; }
- .about-manifesto h2 { font-size:27px; }
  .about-closing > div { padding:26px; }
- .about-closing h2 { font-size:29px; }
- .about-principles h3 { font-size:21px; }
 }
 /* Editorial pages share a readable grid, without placeholder product decoration. */
 .about-edition .about-lead h1 { font-size: clamp(34px,3.8vw,56px); letter-spacing: -.03em; }
 .about-edition .about-still, .about-edition .about-closing { overflow: hidden; }
-.about-edition .about-manifesto h2 { font-size: clamp(29px,3vw,43px); overflow-wrap: normal; text-wrap: balance; }
-.about-edition .about-manifesto p { font-size: 16px; }
-.about-edition .about-principles h3 { font-size: 22px; }
 .about-edition .about-principles svg { color: #855a22; margin-bottom: 20px; }
 .faq-page-edition .page-header h1 { margin-bottom: 22px; }
 .faq-explorer .faq-search button { display: grid; place-items: center; width: 38px; height: 38px; background: transparent; }
 .faq-topics { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-.faq-topics button { background: transparent; color: #596575; border-bottom: 2px solid transparent; min-height: 44px; padding: 7px 0; font-size: 13px; transition: border-color .25s, color .25s; }
+.faq-topics button { background: transparent; color: #596575; border-bottom: 2px solid transparent; min-height: 44px; padding: 7px 0; font-size: var(--text-label); transition: border-color .25s, color .25s; }
 .faq-topics button[aria-pressed='true'] { color: #142b4b; border-bottom-color: #142b4b; font-weight: 700; }
-.faq-result-count { font-size: 12px; color: #596575; padding: 20px 0 8px; }
-.faq-explorer .faq-list summary { font-size: 16px; }
-.faq-explorer .faq-list details p { padding-left: 0; font-size: 15px; }
+.faq-explorer .faq-list summary { font-size: var(--text-body); }
+.faq-explorer .faq-list details p { padding-left: 0; font-size: var(--text-body); }
 .faq-no-results .text-link { margin-top: 16px; background: transparent; }
 .information-reading > .page-header { background: transparent; color: #142b4b; padding: 0 0 36px; border-bottom: 1px solid #142b4b30; }
 .information-reading > .page-header p { color: #596575; max-width: 60ch; }
@@ -242,14 +220,12 @@
 .contact-lead { display: grid; grid-template-columns: 1.15fr 1fr; background: #f3e3d0; align-items: center; }
 .contact-guide .page-header { min-height: 0; padding: clamp(26px,4vw,56px); margin: 0; background: transparent; }
 .contact-guide .page-header h1 { font-size: clamp(32px,4vw,56px); line-height: 1.2; }
-.contact-guide .page-header p { max-width: 40ch; font-size: 16px; }
 .contact-still picture, .contact-still img { display: block; width: 100%; height: auto; }
 .contact-guide-body { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px,7vw,100px); padding-top: 56px; }
 .contact-guide-body h2 { font-size: 24px; max-width: 24ch; line-height: 1.4; margin-bottom: 18px; }
-.contact-guide-body p { font-size: 15px; color: #596575; line-height: 1.9; margin-bottom: 26px; max-width: 48ch; }
+.contact-guide-body p { font-size: var(--text-body); color: #596575; line-height: 1.75; margin-bottom: 26px; max-width: 48ch; }
 .contact-guides a { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 23px 0; border-top: 1px solid #142b4b30; font-size: 21px; font-weight: 700; }
 .contact-guides a:last-child { border-bottom: 1px solid #142b4b30; }
-.contact-guides small { display: block; font-size: 13px; color: #596575; font-weight: 400; margin-top: 7px; }
 .contact-guides svg { transition: transform .3s; }
 .contact-guides a:hover svg { transform: translate(3px,-3px); }
 @media(max-width:850px) {

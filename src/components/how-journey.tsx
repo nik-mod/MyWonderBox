@@ -2,15 +2,16 @@
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
-import { ordersOpeningLater, plannedDelivery } from '@/lib/preview-copy';
+import { messengerOrdering } from '@/lib/preview-copy';
+import { howSteps } from './how-content';
 import { JourneyGlints, JourneyToys } from './journey-toys';
 import { allowMotion, gsap, ScrollTrigger, useGSAP } from './motion';
 import './how-journey.css';
 
 const chapters = [
-  { title: 'აირჩიე ყუთი', line: 'შეარჩიე შენი სიურპრიზი.', label: 'არჩევანი', stop: .12 },
-  { title: 'მიიღე სახლში', line: plannedDelivery, label: 'მიწოდება', stop: .36 },
-  { title: 'გახსენი სიურპრიზი!', line: 'აღმოაჩინე, რა იმალება შიგნით.', label: 'აღმოჩენა', stop: .85 },
+  { ...howSteps[0], label: 'არჩევა', stop: .12 },
+  { ...howSteps[1], label: 'მიწოდება', stop: .36 },
+  { ...howSteps[2], label: 'გახსნა', stop: .85 },
 ];
 const cuts = [.28, .47];
 const fps = 24;
@@ -188,8 +189,8 @@ export function HowJourney() {
       <div className="journey-intro-inner">
         <div className="journey-intro-copy">
           <h1 className="journey-intro-title"><span><span className="journey-title-ink">როგორ მუშაობს</span></span>{' '}<span lang="en"><span className="journey-title-ink">MyWonderBox?</span></span></h1>
-          <div className="journey-intro-foot"><p>შენ ირჩევ ყუთს.<br />სიურპრიზი შიგნით გელოდება.</p>
-            <a href="#journey-film" className="button button-yellow journey-begin">დაიწყე აღმოჩენა <ArrowDown size={20} aria-hidden="true" /></a>
+          <div className="journey-intro-foot">
+            <a href="#journey-film" className="button button-yellow journey-begin">ეტაპების ნახვა <ArrowDown size={20} aria-hidden="true" /></a>
           </div>
         </div>
         <JourneyToys scene="intro" />
@@ -201,9 +202,9 @@ export function HowJourney() {
         <div className="journey-stage-top"><a href="#journey-end">ყუთებზე გადასვლა <ArrowUpRight size={15} aria-hidden="true" /></a></div>
         <div className="journey-composition">
           <ol className="journey-chapters">
-            {chapters.map(({ title, line, label }, index) => <li className="journey-chapter" id={`journey-step-${index}`} key={title}>
-              <div className="journey-chapter-label"><span>0{index + 1}</span><span>{label}</span></div>
-              <h2>{title}</h2><p>{line}</p>
+            {chapters.map(({ title, description }, index) => <li className="journey-chapter" id={`journey-step-${index}`} key={title}>
+              <div className="journey-chapter-number" aria-hidden="true">0{index + 1}</div>
+              <h2>{title}</h2><p>{description}</p>
             </li>)}
           </ol>
           <figure className="journey-screen">
@@ -222,20 +223,20 @@ export function HowJourney() {
           <nav className="journey-milestones" aria-label="აირჩიე აღმოჩენის ეტაპი">
             <div className="journey-progress-track" aria-hidden="true"><span className="journey-progress-fill" /></div>
             {chapters.map(({ label }, index) => <button type="button" key={label} aria-current={active === index ? 'step' : undefined} onClick={() => jump(index)}>
-              <span>0{index + 1}</span><span>{label}</span>
+              {label}
             </button>)}
           </nav>
-          <span className="journey-scroll-note" role="status">{mode === 'error' ? 'ვიდეო ვერ ჩაიტვირთა. წაიკითხე ნაბიჯები ზემოთ.' : mode === 'ready' ? 'ჩამოსქროლე შემდეგი ეტაპისთვის' : ''}</span>
+          {mode === 'error' && <span className="journey-scroll-note" role="status">ვიდეო ვერ ჩაიტვირთა. ეტაპები ზემოთ შეგიძლია წაიკითხო.</span>}
         </div>
       </div>
     </section>
     <section className="journey-end" id="journey-end">
       <div className="journey-end-inner">
         <JourneyGlints scene="end" />
-        <h2>მზად ხარ <em>სიურპრიზისთვის?</em></h2>
-        <p>{ordersOpeningLater}</p>
+        <h2>სიურპრიზის ყუთები</h2>
+        <p>{messengerOrdering}</p>
         <div className="journey-end-actions">
-          <Link className="button button-yellow" href="/shop">აღმოაჩინე ყუთები <ArrowRight size={21} aria-hidden="true" /></Link>
+          <Link className="button button-yellow" href="/shop">ყუთების ნახვა <ArrowRight size={21} aria-hidden="true" /></Link>
           <Link className="text-link" href="/faq">კითხვები და პასუხები <ArrowUpRight size={16} aria-hidden="true" /></Link>
         </div>
         <JourneyToys scene="end" />

@@ -3,14 +3,11 @@
   border-radius: 14px;
 }
 
-.about-edition .about-lead h1,
-.about-edition .about-manifesto h2,
-.about-edition .about-closing h2 {
+.about-edition .about-lead h1 {
   text-wrap: balance;
   overflow-wrap: normal;
 }
 
-.about-edition .about-lead h1 em { display: block; }
 .about-edition .about-lead-copy .button { min-height: 48px; }
 
 .about-edition .about-lead .edition-preview-photo {
@@ -26,7 +23,7 @@
 .about-edition .edition-preview-photo > span[aria-hidden='true'] { opacity: 0; }
 .about-edition .edition-preview-photo picture { display: block; }
 .about-edition .edition-preview-photo img { display: block; width: 100%; }
-.about-edition .edition-preview-tabs button { font-size: 13px; }
+.about-edition .edition-preview-tabs button { font-size: var(--text-label); }
 .about-edition .edition-preview-tabs button:hover { color: #a11d63; }
 .about-edition .edition-preview-caption { margin-bottom: 2px; }
 .about-edition .about-principles article:first-child { padding-inline-start: 24px; }
@@ -41,7 +38,6 @@
   background: #10203b;
 }
 .about-edition .about-paired-photo img { aspect-ratio: 1536 / 645; object-fit: contain; }
-.about-edition .model-credits-link { min-height: 44px; }
 
 .faq-page-edition > .page-header {
   border-radius: 14px;
@@ -69,6 +65,7 @@
 }
 .faq-page-edition .faq-search:focus-within { border-color: #87344f; }
 .faq-page-edition .faq-search input { min-width: 0; min-height: 44px; }
+.faq-page-edition .faq-search input { font-size: var(--text-body); }
 .faq-page-edition .faq-search input::placeholder { color: #6b575e; }
 .faq-page-edition .faq-search input::-webkit-search-cancel-button { display: none; }
 .faq-page-edition .faq-search button {
@@ -78,15 +75,15 @@
   place-items: center;
   background: transparent;
 }
-.faq-page-edition .faq-topics { gap: 4px 18px; }
+.faq-page-edition .faq-topics { gap: 4px 18px; margin-bottom: 12px; }
 .faq-page-edition .faq-topics button { text-align: start; }
 .faq-page-edition .faq-list details { scroll-margin-top: 113px; }
 .faq-page-edition .faq-list summary { min-height: 62px; }
 .faq-page-edition .faq-list summary:focus-visible { outline-offset: -4px; }
 .faq-page-edition .faq-answer { padding-block: 2px 20px; }
 .faq-page-edition .faq-answer p { margin: 0; padding: 0; max-width: 62ch; }
-.faq-page-edition .faq-help { align-items: center; padding: 16px 22px; border-radius: 10px; }
-.faq-page-edition .faq-help a { align-items: center; min-height: 44px; }
+.faq-page-edition .faq-help { align-items: center; padding: 8px 18px; border-radius: 10px; }
+.faq-page-edition .faq-help a { align-items: center; min-height: 44px; font-size: var(--text-body); }
 
 .contact-guide .contact-lead {
   grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
@@ -127,7 +124,10 @@
   gap: 12px;
   padding-inline: 17px;
   white-space: nowrap;
+  border-color: #fff4dfa0;
+  color: #fff4df;
 }
+.contact-guide .contact-phone:hover { background: #fff4df; color: #102b4b; }
 .contact-copy-phone {
   display: grid;
   min-height: 46px;
@@ -145,7 +145,9 @@
   color: #ffda76;
   font-size: 12px;
 }
-.contact-guide .contact-email { color: #fff4df; overflow-wrap: anywhere; }
+.contact-guide .contact-email { overflow-wrap: anywhere; }
+.contact-other-links { display: flex; flex-wrap: wrap; gap: 0 20px; }
+.contact-other-links .text-link { min-height: 44px; gap: 8px; font-size: var(--text-label); color: #fff4df; }
 .contact-guide .contact-guide-body > section {
   border-radius: 10px;
   align-self: stretch;
@@ -158,9 +160,10 @@
 
 .information-reading > .page-header.policy-hero {
   border-radius: 14px;
-  min-height: clamp(220px, 19vw, 290px);
+  min-height: clamp(160px, 15vw, 220px);
 }
 .information-reading > .page-header.policy-hero h1 {
+  margin: 0;
   text-wrap: balance;
   overflow-wrap: normal;
 }
@@ -196,11 +199,13 @@
   overflow-wrap: normal;
 }
 .information-reading .policy-content p {
+  font-size: var(--text-body);
   white-space: pre-line;
   line-height: 1.75;
   margin-top: 14px;
   overflow-wrap: anywhere;
 }
+.information-reading .policy-content > p:first-child { margin-top: 0; }
 .policy-next-links {
   display: flex;
   flex-wrap: wrap;
@@ -212,7 +217,7 @@
 }
 .information-reading .policy-next-links .text-link {
   min-height: 44px;
-  font-size: 13px;
+  font-size: var(--text-label);
 }
 .information-reading .collection-invitation { border-radius: 12px; }
 .information-reading .collection-invitation span { min-height: 44px; }
@@ -239,27 +244,24 @@
   .about-edition .about-lead h1 { font-size: clamp(27px, 8vw, 44px); line-height: 1.27; }
   .about-edition .about-lead-copy p { margin-block: 10px 14px; }
   .about-edition .edition-preview-tabs { padding: 6px 10px 0; gap: 14px; }
-  .about-edition .edition-preview-tabs button { font-size: 11px; }
   .about-edition .edition-preview-caption { margin-inline: 14px; padding-block: 4px; }
   .about-edition .about-principles { padding-inline: 16px; }
   .about-edition .about-principles :is(article, article:first-child) { padding-inline: 4px; }
   .faq-page-edition > .page-header { padding: 20px; }
   .faq-page-edition > .page-header h1 { font-size: clamp(24px, 7.5vw, 36px); margin-bottom: 0; }
-  .faq-page-edition > .page-header p { margin-top: 10px; }
   .faq-page-edition > .page-header .faq-product-link { margin-top: 15px; }
   .faq-page-edition .faq-product-link span { display: flex; align-items: center; gap: 7px; }
   .faq-page-edition .faq-product-link svg { margin: 0; width: 15px; flex-shrink: 0; }
   .faq-page-edition .faq-topics { gap: 2px 15px; }
-  .faq-page-edition .faq-topics button { font-size: 12px; }
   .contact-guide .contact-lead h1 { font-size: clamp(25px, 7.8vw, 46px); }
   .contact-guide .contact-lead .page-header { padding: 24px 20px 9px; }
   .contact-guide .contact-phone-actions { margin-top: 18px; }
   .contact-guide .contact-guides a { padding-inline: 4px; font-size: 17px; }
   .information-reading > .page-header.policy-hero { min-height: 0; padding: 22px; gap: 15px; }
   .information-reading > .page-header.policy-hero h1 { font-size: clamp(21px, 6.3vw, 35px); }
-  .information-reading > .page-header.policy-hero p { margin-top: 10px; }
-  .information-reading .information-aside nav a { font-size: 11px; padding-inline: 7px; }
-  .information-reading .information-aside nav a:hover { padding-left: 7px; }
+  .information-reading .information-aside nav { display: flex; flex-wrap: wrap; }
+  .information-reading .information-aside nav a { flex: 1 0 auto; font-size: var(--text-label); padding-inline: 9px; }
+  .information-reading .information-aside nav a:hover { padding-inline: 9px; }
   .information-reading .information-aside nav a svg { width: 12px; }
   .information-reading .policy-content h2 { font-size: clamp(18px, 5.4vw, 27px); }
 }

@@ -175,7 +175,7 @@
   color: var(--cinema-ink);
 }
 
-.story-edition h2, .home-v2 .final-edition h2 {
+.story-edition h2 {
   font-size: clamp(29px, 6.1vw, 90px);
   line-height: 1.09;
   letter-spacing: -.038em;
@@ -241,11 +241,12 @@
 .home-v2 .why-edition li { border-top: 1px solid #1025413b; padding: 16px 0; gap: 18px; }
 .home-v2 .why-edition li:last-child { border-bottom: 1px solid #1025413b; }
 .home-v2 .why-edition li h3 { font-size: clamp(17px, 2vw, 24px); }
-.home-v2 .why-edition li p { font-size: 15px; }
+.home-v2 .why-edition li p { font-size: var(--text-body); }
+.home-v2 .why-edition .benefit-link { font-size: var(--text-label); }
 
 .home-v2 .faq-edition { padding-block: clamp(40px, 5vw, 80px) clamp(46px, 6vw, 90px); }
-.home-v2 .faq-edition .faq-list summary { font-size: clamp(15px, 1.35vw, 19px); }
-.home-v2 .faq-edition .faq-list p { font-size: 15px; }
+.home-v2 .faq-edition .faq-list summary { font-size: clamp(1rem, 1.35vw, 1.1875rem); }
+.home-v2 .faq-edition .faq-list p { font-size: var(--text-body); }
 
 .home-v2 .final-edition {
   background: #ffc92a;
@@ -382,7 +383,4 @@
  .home-v2 .story-box { width: 100%; }
  .home-v2 .story-box-navy { margin-bottom: 25px; }
  .home-v2 .story-box-berry { margin-top: 25px; }
- .home-v2 .why-edition .why-age { font-size: 32px; margin-top: 24px; }
- .home-v2 .why-edition .why-age small { display: inline; margin-left: 10px; }
- .home-v2 .final-edition h2 { transform: none; }
 }

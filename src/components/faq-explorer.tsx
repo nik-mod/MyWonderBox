@@ -93,7 +93,7 @@ export function FAQExplorer({ questions }: { questions: FAQ[] }) {
         {topics.map(([value, label]) => <button type="button" key={value} aria-pressed={topic === value}
           onClick={() => setTopic(value)}>{label}</button>)}
       </div>
-      <p className="faq-result-count" role="status">{visible.length} კითხვა</p>
+      <p className="sr-only" role="status">{visible.length} კითხვა</p>
       <div className="faq-list prose">
         {visible.map(({ id, question, answer }) => (
           <details id={id} key={id} onToggle={event => animateAnswer(event.currentTarget)}>
@@ -111,8 +111,7 @@ export function FAQExplorer({ questions }: { questions: FAQ[] }) {
         </div>
       )}
       <div className="faq-help">
-        <span>სხვა კითხვა გაქვს?</span>
-        <Link href="/contact">საკონტაქტო ინფორმაცია <ArrowUpRight size={18} aria-hidden="true" /></Link>
+        <Link href="/contact">დაგვიკავშირდი <ArrowUpRight size={18} aria-hidden="true" /></Link>
       </div>
     </div>
   );

@@ -62,12 +62,12 @@ export function ProductGrid({ products }: { products: Product[] }) {
           <div className="product-card-copy">
             <h3><Link href={productHref(product.slug)}>{product.name}</Link></h3>
             <div className="product-meta">
-              <span>{product.age_label || 'ასაკი იხილე აღწერაში'}</span>
+              {product.age_label && <span>{product.age_label}</span>}
               <span className="product-price">{formatMoney(product.price_minor)}</span>
             </div>
             <PackagingLabel packaging={product.packaging} />
             <Link className="button button-outline" href={productHref(product.slug)}>
-              გაიცანი ყუთი <ArrowRight size={17} aria-hidden="true" />
+              ყუთის ნახვა <ArrowRight size={17} aria-hidden="true" />
             </Link>
           </div>
         </article>
@@ -89,8 +89,7 @@ export function ProductGallery({ product }: { product: Product }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const selected = images.includes(selection) ? selection : images[0];
   const design = product.packaging ? packagingDesigns[product.packaging] : undefined;
-  const isDetail = selected === design?.detail;
-  const officialPhoto = product.packaging && (selected === design?.image || isDetail);
+  const officialPhoto = design && selected === design.image;
   useGSAP(() => {
     if (!inspecting || !window.matchMedia(allowMotion).matches) return;
     gsap.from('.product-photo-dialog-body', {
@@ -106,7 +105,7 @@ export function ProductGallery({ product }: { product: Product }) {
           setInspecting(true);
         }}>
           {officialPhoto && product.packaging
-            ? <PackagingPhoto color={product.packaging} loading="eager" detail={isDetail} />
+            ? <PackagingPhoto color={product.packaging} loading="eager" />
             : <img key={selected} src={selected} alt={product.name} width="900" height="600" decoding="async" />}
           <span className="product-photo-zoom-icon"><Maximize2 size={20} aria-hidden="true" /></span>
         </button>
@@ -116,7 +115,7 @@ export function ProductGallery({ product }: { product: Product }) {
           {images.map((image, index) => (
             <button type="button" key={image} className={selected === image ? 'selected' : ''}
               aria-label={`ფოტო ${index + 1}`} aria-pressed={selected === image} onClick={() => setSelection(image)}>
-              <img src={image === design?.image ? design.compact : image === design?.detail ? design.detailCompact : image}
+              <img src={image === design?.image ? design.compact : image}
                 alt="" width="75" height="75" decoding="async" />
             </button>
           ))}

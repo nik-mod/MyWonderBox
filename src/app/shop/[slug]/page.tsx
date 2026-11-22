@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowUpRight, CalendarClock, ChevronRight, ShieldAlert, Truck } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ShieldAlert, Truck } from 'lucide-react';
 import { getProduct } from '@/lib/catalog';
 import { storefrontMetadata } from '@/lib/metadata';
 import { formatMoney } from '@/lib/money';
 import { PackagingLabel, ProductGallery } from '@/components/products';
-import { ordersOpeningLater, plannedDelivery, previewContentCategories, previewSafetyNote } from '@/lib/preview-copy';
+import { MessengerOrderLink } from '@/components/messenger-order-link';
+import { plannedDelivery, previewContentCategories, previewSafetyNote } from '@/lib/preview-copy';
 import { packagingColors, packagingDesigns, productHref } from '@/lib/packaging';
 import '../shop.css';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -45,15 +46,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <main className="page-shell container product-edition" id="main">
       <ProductStructuredData product={product} />
-      <nav className="breadcrumbs" aria-label="გვერდის მდებარეობა">
-        <Link href="/">მთავარი</Link><ChevronRight size={12} />
-        <Link href="/shop">ყუთები</Link><ChevronRight size={12} /><span>{product.name}</span>
-      </nav>
+      <Link href="/shop" className="commerce-back product-back"><ChevronLeft size={16} aria-hidden="true" /> ყველა ყუთი</Link>
       <div className="product-detail">
         <div className="product-media-column">
           <ProductGallery key={product.id} product={product} />
           {launchEdition && product.image_url === design.image && (
-            <p className="product-preview-caption">შეფუთვის დიზაინის ვიზუალიზაცია</p>
+            <p className="product-preview-caption">შეფუთვის ილუსტრაცია</p>
           )}
           {otherPackaging && (
             <Link href={`/shop?packaging=${otherPackaging}`} className="product-other-edition">
@@ -67,14 +65,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <h1>{product.name}</h1>
           <div className="product-edition-price">
             <span className="detail-price">{formatMoney(product.price_minor)}</span>
+            <MessengerOrderLink />
           </div>
           {launchEdition && product.safety_info && <p className="product-safety-note">
             <ShieldAlert size={18} aria-hidden="true" /><span>{previewSafetyNote}</span>
           </p>}
-          <p>{product.short_description}</p>
+          {!launchEdition && product.short_description && <p>{product.short_description}</p>}
           <dl className="product-essential-facts">
             {categories.length > 0 && <div className="product-content-categories">
-              <dt>{launchEdition ? 'შიგთავსის დაგეგმილი კატეგორიები' : 'შიგთავსის შესაძლო კატეგორიები'}</dt>
+              <dt>შესაძლო შიგთავსი</dt>
               <dd>{categories.join(' · ')}</dd>
             </div>}
             {product.age_label && <div><dt>რეკომენდებული ასაკი</dt><dd>{product.age_label}</dd></div>}
@@ -82,7 +81,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {product.packaging && <div><dt>შეფუთვის ფერი</dt><dd><PackagingLabel packaging={product.packaging} /></dd></div>}
           </dl>
           <div className="notice product-launch-note">
-            <p><CalendarClock size={18} aria-hidden="true" /><span>{ordersOpeningLater}</span></p>
             <p><Truck size={18} aria-hidden="true" /><span>{plannedDelivery}</span></p>
           </div>
           <div className="faq-list product-disclosures">

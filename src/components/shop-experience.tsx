@@ -78,7 +78,7 @@ function PackagingPreview({ color }: { color: Packaging }) {
           </div>
           <div className="shop-preview-notice">
             <Clock3 size={19} aria-hidden="true" />
-            <div><strong>კოლექცია მზადდება</strong><p>ფასები და ასაკობრივი რეკომენდაციები კოლექციის გამოქვეყნების შემდეგ გამოჩნდება.</p></div>
+            <p>ფასები და რეკომენდებული ასაკი კოლექციის გამოქვეყნებისას გამოჩნდება.</p>
           </div>
           <div className="shop-preview-info">
             <PreviewInfo title="შეფუთვის შესახებ">
@@ -178,10 +178,9 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
   return (
     <section className="shop-catalog" aria-label="ყუთების კატალოგი">
       <div className="shop-quick-filters" role="group" aria-label="აირჩიე ყუთის ტიპი">
-        <button type="button" aria-pressed={!packaging} onClick={() => updateQuery({ packaging: '' })}>ყველა ყუთი <span>{products.length}</span></button>
+        <button type="button" aria-pressed={!packaging} onClick={() => updateQuery({ packaging: '' })}>ყველა</button>
         {colors.map(color => <button type="button" key={color} aria-pressed={packaging === color} onClick={() => updateQuery({ packaging: color })}>
           <Swatch color={color} />{packagingDesigns[color].title.replace('ყუთი ', '')}
-          <span>{products.filter(product => product.packaging === color).length}</span>
         </button>)}
       </div>
       <div className="shop-catalog-controls" ref={controls}>

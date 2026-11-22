@@ -11,9 +11,6 @@ export const packagingDesigns = {
     slug: 'mywonderbox-blue',
     image: '/brand/mywonderbox/box-blue.webp',
     compact: '/brand/mywonderbox/box-blue-compact.webp',
-    detail: '/brand/mywonderbox/box-blue-detail.webp',
-    detailCompact: '/brand/mywonderbox/box-blue-detail-compact.webp',
-    detailSize: [1254, 1254],
   },
   'pink-berry': {
     title: 'ყუთი გოგონებისთვის',
@@ -24,9 +21,6 @@ export const packagingDesigns = {
     slug: 'mywonderbox-pink',
     image: '/brand/mywonderbox/box-pink.webp',
     compact: '/brand/mywonderbox/box-pink-compact.webp',
-    detail: '/brand/mywonderbox/box-pink-detail.webp',
-    detailCompact: '/brand/mywonderbox/box-pink-detail-compact.webp',
-    detailSize: [1440, 960],
   },
 } as const satisfies Record<Packaging, object>;
 
@@ -49,7 +43,7 @@ export function catalogProduct(product: Product): Product {
     name: edition?.productName ?? brandCopy(product.name),
     description: brandCopy(product.description ?? ''),
     short_description: brandCopy(product.short_description ?? ''),
-    ...(edition && { packaging: color, image_url: edition.image, images: [edition.detail] }),
+    ...(edition && { packaging: color, image_url: edition.image, images: [] }),
   };
 }
 

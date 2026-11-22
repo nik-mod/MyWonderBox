@@ -5,7 +5,7 @@ import { PackagingPhoto } from './packaging-photo';
 
 export function CollectionInvitation() {
   return <section className="collection-invitation" aria-label="MyWonderBox-ის სიურპრიზის ყუთები">
-    <div><h2>ერთი ყუთი.<br/><em>ბევრი აღმოჩენა.</em></h2><p>გაიცანი შეფუთვები და არჩევამდე გადაამოწმე ასაკი და შიგთავსის აღწერა.</p></div>
+    <h2>სიურპრიზის ყუთები</h2>
     {packagingColors.map(color => {
       const { storedSlug, title } = packagingDesigns[color];
       return <Link href={productHref(storedSlug)} key={color}>

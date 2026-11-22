@@ -26,6 +26,6 @@ export function EditionPreview() {
         <PackagingPhoto color={edition.color} loading={index === 0 ? 'eager' : 'lazy'} />
       </span>)}
     </Link>
-    <div className="edition-preview-caption"><span>4–10 წლის ბავშვებისთვის</span><Link href={href}>გაიცანი ყუთი <ArrowUpRight size={18} aria-hidden="true" /></Link></div>
+    <div className="edition-preview-caption"><Link href={href}>ყუთის ნახვა <ArrowUpRight size={18} aria-hidden="true" /></Link></div>
   </div>;
 }

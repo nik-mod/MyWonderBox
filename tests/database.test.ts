@@ -21,8 +21,11 @@ test('migrations enforce order integrity and access boundary in local PostgreSQL
         file_size_limit integer,allowed_mime_types text[]);
       create table storage.objects(bucket_id text);
       alter table storage.objects enable row level security;
+      grant usage on schema storage to anon, authenticated;
+      grant select on storage.objects to anon, authenticated;
     `);
-    for (const migration of ['202611160001_foundation.sql', '202611160002_order_foundation.sql']) {
+    for (const migration of ['202611160001_foundation.sql', '202611160002_order_foundation.sql',
+      '202611240001_reduce_public_access.sql']) {
       await db.exec(await readFile('supabase/migrations/' + migration, 'utf8'));
     }
     const product = '5f463cc3-cd90-4b5c-8501-055f0a7ff11a';
@@ -36,6 +39,7 @@ test('migrations enforce order integrity and access boundary in local PostgreSQL
     await db.exec(`
       insert into auth.users(id) values ('${administrator}');
       insert into public.admin_users(user_id) values ('${administrator}');
+      insert into storage.objects(bucket_id) values ('product-media'), ('another-bucket');
       update public.store_settings set checkout_enabled=true,
         delivery_zones='[{"id":"test","name":"Test zone","price_minor":500}]';
       insert into public.products(id,slug,name,description,short_description,price_minor,
@@ -50,10 +54,13 @@ test('migrations enforce order integrity and access boundary in local PostgreSQL
       );
     await db.exec('set role anon');
     assert.equal((await db.query('select id from public.products')).rows.length, 1);
+    assert.equal((await db.query('select bucket_id from storage.objects')).rows.length, 0);
+    await assert.rejects(db.query('select public.is_admin()'), /permission denied/);
     await assert.rejects(reserve(checkout), /permission denied/);
     await assert.rejects(db.query('select * from public.orders'), /permission denied/);
     await db.exec('set role authenticated');
     assert.equal((await db.query('select id from public.orders')).rows.length, 0);
+    assert.equal((await db.query('select bucket_id from storage.objects')).rows.length, 0);
     await assert.rejects(db.query('update public.products set reserved_stock=0'), /permission denied/);
     await db.exec('set role service_role');
     const failedKey = '3cd3ba42-0341-4cbd-ae8c-c19dd45326e4';
@@ -73,6 +80,8 @@ test('migrations enforce order integrity and access boundary in local PostgreSQL
     assert.equal((await db.query('select id from public.orders')).rows.length, 0);
     await db.query("select set_config('request.jwt.claim.sub',$1,false)", [administrator]);
     assert.deepEqual((await db.query('select id from public.orders')).rows, [{ id: order.id }]);
+    assert.equal((await db.query('select id from public.products')).rows.length, 2);
+    assert.deepEqual((await db.query('select bucket_id from storage.objects')).rows, [{ bucket_id: 'product-media' }]);
     await assert.rejects(db.query("select public.transition_order($1,'confirmed')", [order.id]), /Verified payment required/);
     await assert.rejects(db.query("select public.transition_order($1,'cancelled')", [order.id]), /Reconcile payment/);
     await db.exec("reset request.jwt.claim.sub; set role service_role");

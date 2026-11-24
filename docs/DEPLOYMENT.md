@@ -8,4 +8,12 @@ Later: create a Supabase project; run the migration; create an administrator usi
 
 Create and publish real products through `/admin`. Add confirmed contact details, shipping zones and reviewed policies. Connect a payment provider in a later milestone before enabling checkout. Configure provider webhook URLs, durable rate limiting, backups and monitoring; verify the deployed environment end to end.
 
+## Security checks for the Messenger launch
+
+- Set `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the hosting dashboard. The storefront, Messenger ordering, and admin login work without `SUPABASE_SECRET_KEY`. Keep private credentials in ignored local files or server-only hosting variables when needed.
+- Enable two-factor authentication on the accounts that control the repository, hosting, Supabase, Facebook Page, and domain. Enable GitHub secret scanning and push protection where available.
+- In Supabase, disable public sign-ups and anonymous sign-ins, confirm that `admin_users` contains only the intended staff, and verify backups and the restore process. Review the Security Advisor findings and Auth rate limits.
+- Apply `202611240001_reduce_public_access.sql` to restrict the admin helper and product-media listing. If the SQL Editor cannot alter `storage.objects`, use Storage → Policies to edit `Public product media` to target `authenticated` with the `USING` expression from the migration. Run the product policy and function statements in SQL Editor separately.
+- Once the custom domain has HTTPS, configure per-client rate limiting for `POST /admin/login` at the host and test a legitimate admin login. Confirm signed-out visitors are sent to the login page and that a customer can reach the Page's Messenger chat from the cart.
+
 The current scope is local UI development in the supplied Next.js repository. No hosted site or production store has been registered or deployed.

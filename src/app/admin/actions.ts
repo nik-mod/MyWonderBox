@@ -7,6 +7,12 @@ import {productSchema,settingsSchema} from '@/lib/validation';
 import {z} from 'zod';
 import sharp from 'sharp';
 
+const imageFormats = new Map([
+  ['image/png', 'png'],
+  ['image/jpeg', 'jpeg'],
+  ['image/webp', 'webp'],
+]);
+
 export async function signIn(form:FormData) {
   const email=String(form.get('email')??'').trim();const password=String(form.get('password')??'');
   if(!z.email().safeParse(email).success || password.length<8 || password.length>128) redirect('/admin/login?state=invalid');
@@ -49,12 +55,26 @@ export async function archiveProduct(form:FormData){
   if(!data)redirect('/admin/products?state=stale');
   revalidatePath('/','layout');redirect('/admin/products?state=saved');
 }
-export async function uploadImage(form:FormData){
-  const {client,user}=await requireAdmin();const file=form.get('image');
-  if(!(file instanceof File) || file.size===0 || file.size>5*1024*1024 || !['image/png','image/jpeg','image/webp'].includes(file.type))redirect('/admin/products?state=image-invalid');
-  let buffer:Buffer;
-  try{buffer=await sharp(Buffer.from(await file.arrayBuffer()),{limitInputPixels:25000000}).rotate().resize({width:1800,height:1800,fit:'inside',withoutEnlargement:true}).webp({quality:86}).toBuffer();}
-  catch{redirect('/admin/products?state=image-invalid');}
+export async function uploadImage(form: FormData) {
+  const { client, user } = await requireAdmin();
+  const file = form.get('image');
+  if (!(file instanceof File) || file.size === 0 || file.size > 5 * 1024 * 1024) {
+    redirect('/admin/products?state=image-invalid');
+  }
+  const expectedFormat = imageFormats.get(file.type);
+  if (!expectedFormat) redirect('/admin/products?state=image-invalid');
+
+  let buffer: Buffer;
+  try {
+    const image = sharp(Buffer.from(await file.arrayBuffer()), { limitInputPixels: 25_000_000 });
+    const { format } = await image.metadata();
+    if (format !== expectedFormat) throw new Error('Invalid image format');
+    buffer = await image.rotate()
+      .resize({ width: 1800, height: 1800, fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 86 }).toBuffer();
+  } catch {
+    redirect('/admin/products?state=image-invalid');
+  }
   const path=`${user.id}/${crypto.randomUUID()}.webp`;
   const {error}=await client.storage.from('product-media').upload(path,buffer,{contentType:'image/webp',upsert:false});
   if(error)redirect('/admin/products?state=error');

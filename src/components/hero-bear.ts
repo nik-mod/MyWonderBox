@@ -5,7 +5,6 @@ type Art = Record<typeof assets[number], HTMLImageElement>;
 const crop = { x: 875, y: 65, width: 625, height: 838 };
 const legLayerSize = 184;
 const radians = Math.PI / 180;
-export const bearMotion = '(min-width: 320px) and (min-height: 600px) and (max-aspect-ratio: 12/5) and (prefers-reduced-motion: no-preference)';
 
 function poseAtStart() {
   return { x: 1090, y: 415, tilt: 0, squash: 1, wallShadow: 0,
@@ -494,7 +493,6 @@ export function mountHeroBear(hero: HTMLElement, context: gsap.Context) {
   const canvas = hero.querySelector<HTMLCanvasElement>('.hero-bear');
   const image = hero.querySelector<HTMLImageElement>('.hero-photo img');
   if (!track || !canvas || !image) return;
-  if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
   let alive = true;
   let loading = false;
   let art: Art | undefined;

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { formatMoney } from '@/lib/money';
+import { giftBag } from '@/lib/gift-bags';
 import { productHref } from '@/lib/packaging';
 import { useCart } from './cart-context';
 import { BoxMark } from './brand';
@@ -32,14 +33,14 @@ export function CartDrawer() {
         <div className="cart-drawer-content">
           {!ready ? <p role="status">კალათა იტვირთება…</p> : lines.length === 0 ? (
             <div className="cart-drawer-empty"><ShoppingBag size={44} strokeWidth={1.2} aria-hidden="true" />
-              <p>კალათა ცარიელია.</p><Link className="button button-yellow" href="/shop" onClick={close}>ყუთების ნახვა <ArrowRight size={18} /></Link>
+              <p>კალათა ცარიელია.</p><Link className="button button-yellow" href="/shop" onClick={close}>მაღაზიის ნახვა <ArrowRight size={18} /></Link>
             </div>
           ) : <ul>{lines.map(({ product, quantity }) => (
             <li className="drawer-line" key={product.id}>
               <Link href={productHref(product.slug)} onClick={close} aria-label={product.name}>
                 {product.image_url ? <ProductThumbnail product={product} decorative /> : <BoxMark />}
               </Link>
-              <div><Link href={productHref(product.slug)} onClick={close}>{product.name}</Link>
+              <div><Link href={productHref(product.slug)} onClick={close}>{giftBag(product)?.title ?? product.name}</Link>
                 <strong>{formatMoney(product.price_minor * quantity)}</strong>
                 <div className="drawer-line-actions">
                   <div className="quantity-control">

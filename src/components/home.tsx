@@ -9,11 +9,14 @@ import { PackagingShowcase } from './packaging-showcase';
 import { StoryPlayroom } from './story-playroom';
 import { useHomeMotion } from './home-motion';
 import { messengerOrdering, plannedDelivery } from '@/lib/preview-copy';
+import { giftBag } from '@/lib/gift-bags';
+import { ProductGrid } from './products';
 import './home-cinema.css';
 
 export function Home({ products }: { products: Product[] }) {
   const root = useRef<HTMLElement>(null);
   useHomeMotion(root);
+  const bags = products.filter(product => giftBag(product));
 
   return (
     <main id="main" ref={root} className="home-v2">
@@ -36,16 +39,26 @@ export function Home({ products }: { products: Product[] }) {
               <span className="hero-title-line"><span className="hero-title-reveal">პატარა ყუთი.</span></span>{' '}
               <span className="hero-title-line"><span className="hero-title-reveal">დიდი <em>სიხარული.</em></span></span>
             </h1>
-            <p>სიურპრიზის ყუთები ბავშვებისთვის.</p>
+            <p>სიურპრიზ-პარკები და ყუთები ბავშვებისთვის.</p>
             <div className="hero-action">
-              <Link className="button button-yellow" href="/shop">ყუთების დათვალიერება <ArrowRight size={22} /></Link>
-              <Link className="hero-chapter-link" href="/how-it-works"><ArrowUpRight size={16} aria-hidden="true" /> როგორ მუშაობს?</Link>
+              <Link className="button button-yellow" href="/shop">კოლექციის ნახვა <ArrowRight size={22} /></Link>
+              <Link className="hero-chapter-link" href="/how-it-works" prefetch={false}><ArrowUpRight size={16} aria-hidden="true" /> როგორ მუშაობს?</Link>
             </div>
           </div>
         </div>
         <div className="hero-shutter" aria-hidden="true" />
       </section>
       </div>
+
+      {bags.length > 0 && <section className="bag-collection" aria-labelledby="bag-collection-title">
+        <div className="container">
+          <div className="collection-intro">
+            <h2 id="bag-collection-title">სიურპრიზ-პარკები</h2>
+            <Link href="/shop" className="text-link">ყველა პროდუქტი <ArrowUpRight size={18} aria-hidden="true" /></Link>
+          </div>
+          <ProductGrid products={bags} eager={false} />
+        </div>
+      </section>}
 
       <HowFilm />
 

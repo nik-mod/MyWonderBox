@@ -25,7 +25,6 @@
 .journey-intro-title > span { display:block; overflow:hidden; padding-bottom:.17em; margin-bottom:-.17em; }
 .journey-title-ink { display:block; }
 .journey-intro-title > span:last-child { color:var(--journey-gold); }
-.how-journey .button { border-radius:6px; min-height:50px; }
 .journey-begin svg { transition:transform .25s ease; }
 .journey-begin:is(:hover,:focus-visible) svg { transform:translateY(3px); }
 .how-journey :is(a,button):focus-visible { outline:2px solid var(--journey-gold); outline-offset:5px; }

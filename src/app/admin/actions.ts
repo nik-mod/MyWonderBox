@@ -78,3 +78,23 @@ export async function updateOrder(form:FormData){
   if(error)redirect('/admin/orders?state=transition');
   revalidatePath('/admin');redirect('/admin/orders?state=saved');
 }
+
+export async function confirmMessengerSale(form: FormData) {
+  const { client } = await requireAdmin();
+  const reference = z.uuid().safeParse(form.get('reference'));
+  const quantity = z.coerce.number().int().min(0).max(99);
+  const blue = quantity.safeParse(form.get('blue'));
+  const pink = quantity.safeParse(form.get('pink'));
+  if (!reference.success || !blue.success || !pink.success || blue.data + pink.data === 0) {
+    redirect('/admin/orders?state=invalid');
+  }
+  const { data, error } = await client.rpc('confirm_messenger_sale', {
+    sale_reference: reference.data, blue_quantity: blue.data, pink_quantity: pink.data,
+  });
+  if (error) {
+    const state = error.code === '23505' ? 'sale-reference' : error.code === 'P0001' ? 'sale-stock' : 'error';
+    redirect(`/admin/orders?state=${state}`);
+  }
+  revalidatePath('/', 'layout');
+  redirect(`/admin/orders?state=${data ? 'sale-saved' : 'sale-recorded'}`);
+}

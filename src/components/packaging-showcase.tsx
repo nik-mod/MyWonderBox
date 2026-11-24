@@ -4,11 +4,14 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { formatMoney } from '@/lib/money';
+import { giftBag } from '@/lib/gift-bags';
 import { packagingColors, packagingDesigns, productHref } from '@/lib/packaging';
 import type { Packaging, Product } from '@/lib/types';
 import { allowMotion, gsap, ScrollTrigger, useGSAP } from './motion';
 import type { OrbitalPose } from './orbital-scene';
 import { PackagingPhoto } from './packaging-photo';
+import { ProductAvailability } from './products';
+import { prefersLightweightMode } from './device-performance';
 import './orbital-showcase.css';
 
 const showcaseMotion = '(min-width: 1040px) and (min-height: 660px) and (pointer: fine) and ' + allowMotion;
@@ -31,7 +34,8 @@ function EditionDetails({ color, product }: { color: Packaging; product?: Produc
     <>
       <h3><span>ყუთი</span>{' '}<span>{editionTitles[color]}</span></h3>
       {product && <p className="edition-price">{formatMoney(product.price_minor)}</p>}
-      <Link href={href} className="edition-action">
+      {product && <ProductAvailability product={product} />}
+      <Link href={href} className="button button-navy edition-action">
         {product ? 'ყუთის ნახვა' : 'შეფუთვის ნახვა'} <ArrowRight size={20} aria-hidden="true" />
       </Link>
     </>
@@ -43,14 +47,14 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<ScrollTrigger | null>(null);
-  const catalog = packagingColors.map(color => products.find(item => item.published && item.packaging === color && item.stock > 0)
-    ?? products.find(item => item.published && item.packaging === color));
+  const catalog = packagingColors.map(color => products.find(item => item.published && item.slug === packagingDesigns[color].storedSlug)
+    ?? products.find(item => item.published && item.packaging === color && !giftBag(item)));
 
   useGSAP(() => {
     const section = sectionRef.current;
     const stage = stageRef.current;
     const canvasHost = canvasRef.current;
-    if (!section || !stage || !canvasHost) return;
+    if (!section || !stage || !canvasHost || prefersLightweightMode()) return;
     const media = gsap.matchMedia(section);
     let anchorFrame = 0;
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
@@ -64,7 +68,6 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
     }
 
     media.add(showcaseMotion, context => {
-      if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
       const abort = new AbortController();
       let studio: Awaited<ReturnType<typeof import('./orbital-scene')['mountOrbitalScene']>> | undefined;
       let timeline: gsap.core.Timeline | undefined;
@@ -126,7 +129,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
       const start = context.add('startOrbitalShowcase', () => {
         const pose: OrbitalPose = { angle: -.14, camera: 1.13, blush: 0, navyLid: 0, navyToys: 0, pinkLid: 0, pinkToys: 0 };
         const title = panels.map(panel => panel.querySelectorAll('h3 span'));
-        const details = panels.map(panel => panel.querySelectorAll('.edition-price, .edition-action'));
+        const details = panels.map(panel => panel.querySelectorAll('.edition-price, .product-availability, .edition-action'));
         setEdition(0);
         studio?.draw(pose, true);
         section.dataset.orbit = 'ready';
@@ -224,7 +227,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
       <div className="edition-static container">
         <div className="collection-intro">
           <h2>სიურპრიზის ყუთები</h2>
-          <Link href="/shop" className="edition-catalog-link">ყველა ყუთი <ArrowUpRight size={18} aria-hidden="true" /></Link>
+          <Link href="/shop" className="edition-catalog-link">ყველა პროდუქტი <ArrowUpRight size={18} aria-hidden="true" /></Link>
         </div>
         <div className="collection-editions">
           {packagingColors.map((color, index) => {
@@ -238,6 +241,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
                 <div className="collection-edition-copy">
                   <h3>{packagingDesigns[color].title}</h3>
                   {product && <p>{formatMoney(product.price_minor)}</p>}
+                  {product && <ProductAvailability product={product} />}
                   <Link href={href} className="edition-action">ყუთის ნახვა <ArrowRight size={18} aria-hidden="true" /></Link>
                 </div>
               </article>
@@ -249,7 +253,7 @@ export function PackagingShowcase({ products }: { products: Product[] }) {
       <div className="orbital-stage" ref={stageRef}>
         <div className="orbital-header">
           <h2>სიურპრიზის ყუთები</h2>
-          <Link href="/shop" className="edition-catalog-link">ყველა ყუთი <ArrowUpRight size={18} aria-hidden="true" /></Link>
+          <Link href="/shop" className="edition-catalog-link">ყველა პროდუქტი <ArrowUpRight size={18} aria-hidden="true" /></Link>
         </div>
         <div className="orbital-layout">
           <div className="orbital-visual" ref={canvasRef} aria-hidden="true" />

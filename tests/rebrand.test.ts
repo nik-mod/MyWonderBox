@@ -8,7 +8,7 @@ import { catalogProduct, packagingDesigns, productHref, storedProductSlug } from
 
 test('legacy catalog and saved cart data adopt the correct edition while keeping their identifiers and amounts', () => {
   const original = {
-    ...launchProducts[0], name: 'JOYBOX — ბიჭებისთვის', description: 'ჯოიბოქსის ყუთი',
+    ...launchProducts.find(item => item.slug === 'joybox-navy')!, name: 'JOYBOX — ბიჭებისთვის', description: 'ჯოიბოქსის ყუთი',
     image_url: 'https://store.example.test/brand/box-navy.webp', stock: 7, price_minor: 3100,
     images: ['https://store.example.test/brand/mywonderbox/box-blue-detail.webp'],
   };

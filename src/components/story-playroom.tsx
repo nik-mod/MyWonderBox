@@ -1,5 +1,6 @@
 import { Hand } from 'lucide-react';
 import type { MouseEvent } from 'react';
+import { prefersLightweightMode } from './device-performance';
 import './story-playroom.css';
 
 const toys = [
@@ -28,7 +29,7 @@ function playToy(event: MouseEvent<HTMLButtonElement>, toy: typeof toys[number])
   if (!artwork || !shadow) return;
 
   [button, artwork, shadow].forEach(element => element.getAnimations().forEach(animation => animation.cancel()));
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (prefersLightweightMode() || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     artwork.animate([{ filter: 'brightness(1)' }, { filter: 'brightness(1.25)' }, { filter: 'brightness(1)' }], 350);
     return;
   }

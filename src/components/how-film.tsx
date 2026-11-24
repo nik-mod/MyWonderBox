@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP, allowMotion } from './motion';
 import { howSteps } from './how-content';
+import { prefersLightweightMode } from './device-performance';
 
 const cinema = '(min-width: 960px) and (min-height: 680px) and (pointer: fine) and ' + allowMotion;
 const motionStill = '(max-width: 959px), (max-height: 679px), (pointer: coarse), (prefers-reduced-motion: reduce)';
@@ -26,7 +27,7 @@ export function HowFilm() {
   useGSAP(() => {
     const stage = stageRef.current;
     const video = videoRef.current;
-    if (!stage || !video) return;
+    if (!stage || !video || prefersLightweightMode()) return;
     const media = gsap.matchMedia(stage);
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
     let anchorFrame = 0;
@@ -39,7 +40,6 @@ export function HowFilm() {
     }
 
     media.add(cinema, context => {
-      if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
       let trigger: ScrollTrigger | undefined;
       let timeline: gsap.core.Timeline | undefined;
       let targetFrame = 0;

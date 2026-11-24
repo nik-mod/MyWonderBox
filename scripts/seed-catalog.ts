@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { launchProducts } from '../src/lib/launch-products';
+import { packagingColors, packagingDesigns } from '../src/lib/packaging';
 
 async function main() {
 const { NEXT_PUBLIC_SUPABASE_URL: url, SUPABASE_SECRET_KEY: key, NEXT_PUBLIC_SITE_URL: site } = process.env;
@@ -11,9 +12,10 @@ if (stock.some(value => !value || !/^\d+$/.test(value) || Number(value) > 100000
   throw new Error('Set JOYBOX_NAVY_STOCK and JOYBOX_BERRY_STOCK to the actual counts.');
 }
 const client = createClient(url, key, { auth: { persistSession: false } });
+const boxSlugs: string[] = packagingColors.map(color => packagingDesigns[color].storedSlug);
 const records = launchProducts.map((product, index) => ({
   ...product,
-  stock: Number(stock[index]),
+  stock: boxSlugs.includes(product.slug) ? Number(stock[boxSlugs.indexOf(product.slug)]) : product.stock,
   sort_order: index,
   image_url: new URL(product.image_url, site).href,
   images: product.images.map(image => new URL(image, site).href),

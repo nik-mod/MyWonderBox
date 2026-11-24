@@ -85,6 +85,43 @@ test('migrations enforce order integrity and access boundary in local PostgreSQL
     assert.deepEqual((await db.query('select stock,reserved_stock from public.products where id=$1', [product])).rows,
       [{ stock:2, reserved_stock:0 }]);
     assert.equal((await db.query('select id from public.orders')).rows.length, 1);
+
+    const catalog = await readFile('supabase/migrations/202611230001_gift_bag_catalog.sql', 'utf8');
+    const sales = await readFile('supabase/migrations/202611230002_messenger_sale_inventory.sql', 'utf8');
+    await db.exec(`insert into public.products(slug,name,description,short_description,price_minor,
+      age_label,image_url,stock,safety_info,published) values
+      ('joybox-navy','Original','Original details','Original summary',3390,'4+','https://example.test/box',25,'Safety',true)`);
+    await db.exec(catalog);
+    await db.exec(sales);
+    const bagStock = () => db.query<{ slug: string; stock: number; sold_quantity: number; price_minor: number }>(
+      `select slug, stock, sold_quantity, price_minor from public.products where slug like 'mywonderbox-bag-%' order by slug`,
+    );
+    assert.deepEqual((await bagStock()).rows, [
+      { slug: 'mywonderbox-bag-blue', stock: 50, sold_quantity: 0, price_minor: 2490 },
+      { slug: 'mywonderbox-bag-pink', stock: 50, sold_quantity: 0, price_minor: 2490 },
+    ]);
+    assert.deepEqual((await db.query(`select slug, stock, price_minor from public.products where slug like 'joybox-%' order by slug`)).rows, [
+      { slug: 'joybox-berry', stock: 0, price_minor: 2990 },
+      { slug: 'joybox-navy', stock: 0, price_minor: 3390 },
+    ]);
+    const sale = (reference: string, blue: number, pink: number) => db.query<{ recorded: boolean }>(
+      'select public.confirm_messenger_sale($1,$2,$3) as recorded', [reference, blue, pink],
+    );
+    await db.exec('set role anon');
+    await assert.rejects(sale(checkout, 2, 3), /permission denied/);
+    await db.exec('set role authenticated');
+    await assert.rejects(sale(checkout, 2, 3), /Administrator required/);
+    await db.query("select set_config('request.jwt.claim.sub',$1,false)", [administrator]);
+    assert.equal((await sale(checkout, 2, 3)).rows[0].recorded, true);
+    assert.equal((await sale(checkout, 2, 3)).rows[0].recorded, false);
+    await assert.rejects(sale(checkout, 2, 4), /different quantities/);
+    await assert.rejects(sale(failedKey, 3, 50), /Insufficient stock/);
+    await db.exec('reset role');
+    await db.exec(catalog);
+    await db.exec(sales);
+    assert.deepEqual((await bagStock()).rows.map(row => [row.stock, row.sold_quantity]), [[48, 2], [47, 3]]);
+    assert.equal((await db.query('select reference from public.messenger_sales')).rows.length, 1);
+    assert.equal((await db.query('select id from public.orders')).rows.length, 1);
   } finally {
     await db.close();
   }

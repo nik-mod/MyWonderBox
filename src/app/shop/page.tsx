@@ -2,12 +2,11 @@ import { Suspense } from 'react';
 import { connection } from 'next/server';
 import { getProducts } from '@/lib/catalog';
 import { ShopExperience } from '@/components/shop-experience';
-import { MessengerOrderLink } from '@/components/messenger-order-link';
 import { storefrontMetadata } from '@/lib/metadata';
 import './shop.css';
 
 export const metadata = storefrontMetadata(
-  '/shop', 'სიურპრიზის ყუთები', 'დაათვალიერე MyWonderBox-ის კოლექცია და გაეცანი ფასებს, შეფუთვის ფერებსა და რეკომენდებულ ასაკს.',
+  '/shop', 'სიურპრიზ-პარკები და ყუთები', 'დაათვალიერე MyWonderBox-ის სიურპრიზ-პარკები და ყუთები. ნახე ფასი, შეფუთვა და ხელმისაწვდომობა.',
 );
 async function ShopCatalog() {
   await connection();
@@ -28,8 +27,7 @@ export default function ShopPage() {
   return (
     <main className="page-shell container shop-editions" id="main">
       <header className="commerce-heading">
-        <h1>სიურპრიზის ყუთები</h1>
-        <MessengerOrderLink />
+        <h1>სიურპრიზ-პარკები და ყუთები</h1>
       </header>
       <Suspense fallback={<ShopCatalogLoading />}><ShopCatalog /></Suspense>
     </main>

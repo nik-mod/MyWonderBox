@@ -1,4 +1,4 @@
-export const messengerOrdering = 'აირჩიე ყუთი და მოგვწერე Messenger-ში. შეკვეთის დეტალებს ჩატში შევათანხმებთ.';
+export const messengerOrdering = 'მარაგში მყოფი პროდუქტი დაამატე კალათაში და შეკვეთის სია გამოგვიგზავნე Messenger-ში. მარაგს და შეკვეთის დეტალებს ჩატში დაგიდასტურებთ.';
 export const plannedDelivery = 'საქართველოს მასშტაბით უფასო მიწოდებაა დაგეგმილი.';
 export const previewPhone = { href: 'tel:+995579284889', label: '579 284 889' };
 export const previewFacebook = {

@@ -40,7 +40,7 @@
     letter-spacing: -.025em;
   }
 
-  .orbital-header .edition-catalog-link { font-size: 14px; align-self: center; }
+  .orbital-header .edition-catalog-link { align-self: center; }
 
   .orbital-layout {
     display: grid;
@@ -75,7 +75,7 @@
     color: #38445b;
     background: transparent;
     border-bottom: 2px solid transparent;
-    font-size: 12px;
+    font-size: var(--text-label);
     font-weight: 800;
     transition: color .18s, border-color .18s;
   }
@@ -104,27 +104,15 @@
 
   .orbital-edition h3 span { display: block; }
 
-  .orbital-edition:focus-within :is(h3 span, .edition-price, .edition-action) {
+  .orbital-edition:focus-within :is(h3 span, .edition-price, .edition-action, .product-availability) {
     clip-path: none !important;
     transform: none !important;
     opacity: 1 !important;
   }
 
-  .orbital-edition .edition-price { margin: 0 0 13px; }
+  .orbital-edition .edition-price { margin: 0 0 9px; font-size: clamp(24px, 2.3vw, 36px); }
 
-  .orbital-edition .edition-action {
-    gap: 19px;
-    min-height: 48px;
-    padding: 8px 15px;
-    border-radius: 4px;
-    background: #ffca35;
-    color: #172538;
-    text-decoration: none;
-    font-size: 14px;
-    transition: background .18s;
-  }
-
-  .orbital-edition .edition-action:hover { background: #f1b80f; }
+  .orbital-edition .edition-action { display: flex; width: fit-content; text-decoration: none; font-size: var(--text-action); }
   .orbital-stage[data-active='1'] .orbital-edition .edition-action { background: #922e54; color: #fff8f2; }
   .orbital-stage[data-active='1'] .orbital-edition .edition-action:hover { background: #7c2346; }
 }
@@ -183,6 +171,7 @@
   grid-row: 1;
   white-space: nowrap;
   font-weight: 800;
+  font-size: clamp(23px, 2.4vw, 32px);
   font-variant-numeric: tabular-nums;
 }
 
@@ -192,4 +181,8 @@
 @media (max-width: 560px) {
   .collection-editions { grid-template-columns: 1fr; }
   .collection-intro h2 { max-width: 16ch; }
+}
+@media (max-width: 390px) {
+  .collection-edition-copy { grid-template-columns: minmax(0, 1fr); }
+  .collection-edition-copy p { grid-column: 1; grid-row: auto; }
 }

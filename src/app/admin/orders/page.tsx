@@ -4,9 +4,16 @@ import { formatMoney } from '@/lib/money';
 import { canTransition } from '@/lib/orders';
 import type { FulfillmentStatus, PaymentStatus } from '@/lib/types';
 import { AdminNav, Notice } from '../_components';
-import { updateOrder } from '../actions';
+import { confirmMessengerSale, updateOrder } from '../actions';
+import { bagDesigns } from '@/lib/gift-bags';
 
 const deliveryStatuses = Object.keys(deliveryLabels) as FulfillmentStatus[];
+const saleNotices: Record<string, string> = {
+  'sale-saved': 'Messenger-ის გაყიდვა დაფიქსირდა. მარაგი განახლდა.',
+  'sale-recorded': 'ეს გაყიდვა უკვე დაფიქსირებულია. მარაგი მეორედ არ შემცირებულა.',
+  'sale-reference': 'ამ კოდით სხვა რაოდენობის გაყიდვაა დაფიქსირებული. გადაამოწმეთ შეკვეთა.',
+  'sale-stock': 'მარაგი არასაკმარისია. გაყიდვა არ დაფიქსირებულა.',
+};
 
 function OrderStatusForm({ id, delivery, payment, reservation }: {
   id: string; delivery: FulfillmentStatus; payment: PaymentStatus; reservation: string;
@@ -50,7 +57,17 @@ export default async function Orders({ searchParams }: {
     <main id="main">
       <AdminNav current="/admin/orders" />
       <h1>შეკვეთები</h1>
-      <Notice state={state} />
+      {state && Object.hasOwn(saleNotices, state) ? <p role="status" className="admin-notice">{saleNotices[state]}</p> : <Notice state={state} />}
+      <details className="admin-panel">
+        <summary>Messenger-ის გაყიდვის დაფიქსირება</summary>
+        <form action={confirmMessengerSale} className="admin-form admin-form-grid">
+          <p className="span-two">შეიყვანეთ მომხმარებლის შეკვეთის კოდი და რაოდენობები მას შემდეგ, რაც შეკვეთას ჩატში დაადასტურებთ.</p>
+          <label className="span-two">შეკვეთის კოდი<input name="reference" type="text" required maxLength={36} autoComplete="off" /></label>
+          <label>{bagDesigns['mywonderbox-bag-blue'].title}<input name="blue" type="number" min={0} max={99} defaultValue={0} required /></label>
+          <label>{bagDesigns['mywonderbox-bag-pink'].title}<input name="pink" type="number" min={0} max={99} defaultValue={0} required /></label>
+          <button type="submit">გაყიდვის დაფიქსირება</button>
+        </form>
+      </details>
       <form className="admin-search">
         <input name="q" aria-label="შეკვეთის ნომერი" placeholder="შეკვეთის ნომერი" defaultValue={q} maxLength={60} />
         <select name="status" aria-label="მიწოდების სტატუსი" defaultValue={status}>

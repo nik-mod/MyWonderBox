@@ -1,77 +1,67 @@
 'use client';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import { ArrowRight, Maximize2, Package, X } from 'lucide-react';
+import { ArrowRight, Maximize2, Package, ShoppingBag, X } from 'lucide-react';
 import type { Product } from '@/lib/types';
-import { formatMoney } from '@/lib/money';
+import { formatProductPrice } from '@/lib/money';
+import { canPurchase, giftBag } from '@/lib/gift-bags';
 import { packagingDesigns, productHref } from '@/lib/packaging';
 import { BoxMark } from './brand';
-import { PackagingPhoto } from './packaging-photo';
-import { allowMotion, editorialEase, gsap, ScrollTrigger, useGSAP, wideMotion } from './motion';
+import { GiftBagPhoto, PackagingPhoto } from './packaging-photo';
+import { useCart } from './cart-context';
+import './product-cards.css';
 
-export function ProductGrid({ products }: { products: Product[] }) {
-  const grid = useRef<HTMLDivElement>(null);
-  const listing = products.map(({ id }) => id).join(',');
+export function ProductAvailability({ product }: { product: Product }) {
+  const available = canPurchase(product);
+  return <span className="product-availability" data-available={available}>{available ? 'მარაგშია' : 'მალე გაყიდვაში'}</span>;
+}
 
-  useGSAP(() => {
-    const element = grid.current;
-    if (!element) return;
-    const media = gsap.matchMedia();
-    media.add(allowMotion, context => {
-      const cards = Array.from(element.querySelectorAll('.product-item'));
-      const revealCards = context.add('revealCards', (entries: Element[]) => {
-        gsap.from(entries, {
-          y: 18, opacity: .82, duration: .64, stagger: .09, ease: editorialEase,
-          clearProps: 'transform,opacity',
-        });
-      });
-      ScrollTrigger.batch(cards, {
-        start: 'top 92%',
-        once: true,
-        interval: .08,
-        batchMax: 3,
-        onEnter: entries => revealCards(entries),
-      });
-    });
-    media.add(wideMotion, () => {
-      // Keep the scroll work bounded when the shop contains a large catalog.
-      const images = Array.from(element.querySelectorAll('.product-image-media')).slice(0, 6);
-      for (const image of images) {
-        gsap.fromTo(image, { yPercent: -1 }, {
-          yPercent: 1, ease: 'none',
-          scrollTrigger: { trigger: image.parentElement, start: 'top bottom', end: 'bottom top', scrub: .35 },
-        });
-      }
-    });
-    return () => media.revert();
-  }, { scope: grid, dependencies: [listing], revertOnUpdate: true });
+export function AddToCart({ product }: { product: Product }) {
+  const { add, lines, ready } = useCart();
+  const quantity = lines.find(line => line.product.id === product.id)?.quantity ?? 0;
+  const atLimit = quantity >= Math.min(product.stock, 99);
+  if (!canPurchase(product)) return null;
+  return <button type="button" className="button button-navy add-to-cart" disabled={!ready || atLimit}
+    onClick={() => add(product)}>
+    <ShoppingBag size={18} aria-hidden="true" /> {atLimit ? 'ხელმისაწვდომი მარაგი კალათაშია' : 'კალათაში დამატება'}
+  </button>;
+}
 
+export function ProductGrid({ products, eager = true }: { products: Product[]; eager?: boolean }) {
   return (
-    <div className="product-grid" ref={grid}>
-      {products.map((product, index) => (
-        <article className="product-item" key={product.id} data-packaging={product.packaging || undefined}>
+    <div className="product-grid">
+      {products.map((product, index) => {
+        const bag = giftBag(product);
+        const loading = eager && index < 2 ? 'eager' : 'lazy';
+        return <article className="product-item" key={product.id} data-packaging={product.packaging || undefined}
+          data-format={bag ? 'bag' : 'box'}>
           <Link href={productHref(product.slug)} className="product-image" aria-label={product.name}>
             {product.image_url ? (
               <span className="product-image-media">
-                {product.packaging && product.image_url === packagingDesigns[product.packaging].image
-                  ? <PackagingPhoto color={product.packaging} loading={index < 2 ? 'eager' : 'lazy'} />
-                  : <img src={product.image_url} alt={product.name} width="600" height="400" loading={index < 2 ? 'eager' : 'lazy'} decoding="async" />}
+                {bag ? <GiftBagPhoto product={product} loading={loading} />
+                  : product.packaging && product.image_url === packagingDesigns[product.packaging].image
+                    ? <PackagingPhoto color={product.packaging} loading={loading} />
+                    : <img src={product.image_url} alt={product.name} width="600" height="400" loading={loading} decoding="async" />}
               </span>
             ) : <BoxMark />}
           </Link>
           <div className="product-card-copy">
-            <h3><Link href={productHref(product.slug)}>{product.name}</Link></h3>
+            <h3><Link href={productHref(product.slug)}>{bag?.title ?? product.name}</Link></h3>
+            {bag && <p className="product-card-subtitle">{product.short_description}</p>}
+            {!bag && product.age_label && <p className="product-card-subtitle">{product.age_label}</p>}
             <div className="product-meta">
-              {product.age_label && <span>{product.age_label}</span>}
-              <span className="product-price">{formatMoney(product.price_minor)}</span>
+              <span className="product-price">{formatProductPrice(product)}</span>
+              <ProductAvailability product={product} />
             </div>
-            <PackagingLabel packaging={product.packaging} />
-            <Link className="button button-outline" href={productHref(product.slug)}>
-              ყუთის ნახვა <ArrowRight size={17} aria-hidden="true" />
-            </Link>
+            <div className="product-card-actions">
+              <AddToCart product={product} />
+              <Link className="text-link product-detail-link" href={productHref(product.slug)}>
+                {bag ? 'პარკის ნახვა' : 'ყუთის ნახვა'} <ArrowRight size={17} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
-        </article>
-      ))}
+        </article>;
+      })}
     </div>
   );
 }
@@ -89,14 +79,8 @@ export function ProductGallery({ product }: { product: Product }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const selected = images.includes(selection) ? selection : images[0];
   const design = product.packaging ? packagingDesigns[product.packaging] : undefined;
+  const bag = giftBag(product);
   const officialPhoto = design && selected === design.image;
-  useGSAP(() => {
-    if (!inspecting || !window.matchMedia(allowMotion).matches) return;
-    gsap.from('.product-photo-dialog-body', {
-      y: 12, opacity: .72, duration: .36, ease: editorialEase, clearProps: 'transform,opacity',
-    });
-  }, { scope: dialog, dependencies: [inspecting], revertOnUpdate: true });
-
   return (
     <div className="product-gallery">
       {selected ? (
@@ -104,7 +88,7 @@ export function ProductGallery({ product }: { product: Product }) {
           dialog.current?.showModal();
           setInspecting(true);
         }}>
-          {officialPhoto && product.packaging
+          {bag ? <GiftBagPhoto product={product} src={selected} loading="eager" /> : officialPhoto && product.packaging
             ? <PackagingPhoto color={product.packaging} loading="eager" />
             : <img key={selected} src={selected} alt={product.name} width="900" height="600" decoding="async" />}
           <span className="product-photo-zoom-icon"><Maximize2 size={20} aria-hidden="true" /></span>
@@ -115,7 +99,7 @@ export function ProductGallery({ product }: { product: Product }) {
           {images.map((image, index) => (
             <button type="button" key={image} className={selected === image ? 'selected' : ''}
               aria-label={`ფოტო ${index + 1}`} aria-pressed={selected === image} onClick={() => setSelection(image)}>
-              <img src={image === design?.image ? design.compact : image}
+              <img src={bag && image === bag.image ? bag.compact : bag && image === bag.detail ? bag.detailCompact : image === design?.image ? design.compact : image}
                 alt="" width="75" height="75" decoding="async" />
             </button>
           ))}
@@ -128,7 +112,7 @@ export function ProductGallery({ product }: { product: Product }) {
         <div className="product-photo-dialog-body">
           <button className="product-photo-close" type="button" aria-label="ფოტოს დახურვა" autoFocus
             onClick={() => dialog.current?.close()}><X size={24} aria-hidden="true" /></button>
-          {inspecting && selected && <img src={selected} alt={officialPhoto && design ? design.alt : product.name} decoding="async" />}
+          {inspecting && selected && <img src={selected} alt={bag?.alt ?? (officialPhoto && design ? design.alt : product.name)} decoding="async" />}
         </div>
       </dialog>
     </div>

@@ -10,3 +10,6 @@
 .admin-root thead { background: #ece4d5; }
 .admin-root .admin-notice { border-left-width: 1px; border-block: 1px solid #dfc58b; }
 .admin-root :is(.admin-button, button, input, select, textarea):focus-visible { outline-offset: 2px; }
+.admin-root :is(.admin-button, button) { min-height: var(--control-height); border-radius: var(--control-radius); font-size: var(--text-action); }
+.admin-root .admin-nav a, .admin-form label { font-size: var(--text-label); }
+.admin-root :is(.admin-form, .admin-search) :is(input, textarea, select) { font-size: var(--text-action); }

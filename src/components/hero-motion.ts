@@ -1,11 +1,13 @@
 import type { RefObject } from 'react';
 import { allowMotion, gsap, useGSAP, wideMotion } from './motion';
-import { bearMotion, mountHeroBear } from './hero-bear';
+import { prefersLightweightMode } from './device-performance';
+
+const bearMotion = '(min-width: 320px) and (min-height: 600px) and (max-aspect-ratio: 12/5) and ' + allowMotion;
 
 export function useHeroMotion(root: RefObject<HTMLElement | null>) {
   useGSAP(() => {
     const hero = root.current?.querySelector<HTMLElement>('.hero-cinema');
-    if (!hero) return;
+    if (!hero || prefersLightweightMode()) return;
     const track = hero.closest('.hero-bear-track') ?? hero;
     const media = gsap.matchMedia(hero);
 
@@ -46,7 +48,12 @@ export function useHeroMotion(root: RefObject<HTMLElement | null>) {
     media.add(bearMotion, context => {
       // Direct links to sections below the hero keep their original scroll position.
       if (['#how', '#collection', '#unboxing'].includes(window.location.hash)) return;
-      return mountHeroBear(hero, context);
+      let active = true;
+      let stop: (() => void) | undefined;
+      void import('./hero-bear').then(({ mountHeroBear }) => {
+        if (active) stop = mountHeroBear(hero, context);
+      }).catch(() => { /* The hero photograph is already visible. */ });
+      return () => { active = false; stop?.(); };
     });
     return () => media.revert();
   }, { scope: root });

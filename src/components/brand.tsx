@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export function Brand({ large = false, onHomeNavigate }: { large?: boolean; onHomeNavigate?: () => void }) {
   return (
-    <Link href="/" className={`brand brand-lockup ${large ? 'brand-large' : ''}`} aria-label="MyWonderBox — მთავარი"
+    <Link href="/" prefetch={false} className={`brand brand-lockup ${large ? 'brand-large' : ''}`} aria-label="MyWonderBox — მთავარი"
       onNavigate={event => {
         onHomeNavigate?.();
         if (window.location.pathname !== '/') return;

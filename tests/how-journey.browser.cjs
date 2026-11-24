@@ -23,10 +23,17 @@ async function openFilm(page) {
   await page.waitForSelector('[data-mode="ready"]');
   await wait(700);
 }
+async function setDeviceHints(page, memory) {
+  await page.addInitScript(memory => {
+    Object.defineProperty(navigator, 'deviceMemory', { get: () => memory });
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+  }, memory);
+}
 async function run() {
   const browser = await chromium.launch({ headless: true, channel: 'chrome' });
   const errors = [];
   const p = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  await setDeviceHints(p, 8);
   p.on('pageerror', e => errors.push(e.message));
   await p.goto(base + '/how-it-works');
   await wait(700);
@@ -91,6 +98,7 @@ async function run() {
   await p.locator('.mobile-menu[open] a[href="/shop"]').click(); await p.waitForURL('**/shop');
   assert.equal(await p.locator('.pin-spacer').count(), 0); pass('Mobile navigation works while pinned and releases scene');
   const touch = await browser.newPage({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true });
+  await setDeviceHints(touch, 8);
   await touch.goto(base + '/how-it-works'); await openFilm(touch);
   const touchFrame = await scrub(touch, .85, await bounds(touch));
   assert.ok(touchFrame.time > touchFrame.duration * .75); pass('Touch/mobile Chrome emulation');
@@ -101,7 +109,23 @@ async function run() {
   assert.equal(mediaRequests, 0); assert.equal(await reduced.locator('.pin-spacer').count(), 0);
   for (const row of await reduced.locator('.journey-chapter').all()) assert.equal(await row.isVisible(), true);
   await reduced.screenshot({ path: out + '/final-reduced-motion.png', fullPage: true }); pass('Reduced-motion still: no video request, no pin, all chapters');
+  const lightweight = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  await setDeviceHints(lightweight, 2);
+  const lightweightMedia = [];
+  lightweight.on('request', request => { if (request.url().endsWith('.mp4')) lightweightMedia.push(request.url()); });
+  await lightweight.goto(base + '/how-it-works');
+  const stillJourney = lightweight.locator('.how-journey[data-mode="still"]:visible');
+  await stillJourney.waitFor();
+  await stillJourney.locator('.journey-begin').click();
+  const lastMilestone = stillJourney.locator('.journey-milestones button').last();
+  await lastMilestone.click();
+  assert.equal(await lastMilestone.getAttribute('aria-current'), 'step');
+  assert.equal(await stillJourney.locator('video').getAttribute('src'), null);
+  assert.equal(await lightweight.locator('.pin-spacer').count(), 0);
+  assert.deepEqual(lightweightMedia, []);
+  pass('2 GB device: static steps stay interactive without loading video');
   const broken = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  await setDeviceHints(broken, 8);
   await broken.route('**/how-journey*.mp4', route => route.abort());
   await broken.goto(base + '/how-it-works'); await broken.locator('.journey-begin').click();
   await broken.waitForSelector('[data-mode="error"]');
@@ -117,6 +141,7 @@ async function run() {
     const b = await engine.launch({ headless: true });
     try {
       const page = await b.newPage({ viewport: { width: 1440, height: 900 } });
+      await setDeviceHints(page, 8);
       const engineErrors = []; page.on('pageerror', e => engineErrors.push(e.message));
       await page.goto(base + '/how-it-works'); await openFilm(page);
       const geometry = await bounds(page);

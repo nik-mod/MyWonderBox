@@ -1,9 +1,10 @@
 import type { Product } from './types';
 import { packagingDesigns, packagingColors } from './packaging';
 import { previewContentCategories } from './preview-copy';
+import { bagDesigns, bagSlugs } from './gift-bags';
 
 // Owner-confirmed starting inventory for the local catalog.
-export const launchProducts: Product[] = packagingColors.map((packaging, index) => {
+const boxes: Product[] = packagingColors.map((packaging, index) => {
   const edition = packagingDesigns[packaging];
   return {
     id: index === 0 ? 'a301a032-06af-4001-befd-35f98ac0dc01' : 'a301a032-06af-4001-befd-35f98ac0dc02',
@@ -13,7 +14,7 @@ export const launchProducts: Product[] = packagingColors.map((packaging, index) 
     description: 'MyWonderBox ბავშვებისთვის განკუთვნილი სიურპრიზის ყუთია. ზუსტი შიგთავსი გახსნამდე სიურპრიზად რჩება და შეიძლება განსხვავდებოდეს ყუთებს შორის. ფოტოებსა და ანიმაციებში ნაჩვენები სათამაშოები მაგალითებია. კონკრეტული სათამაშო, ბრენდი ან ნივთების რაოდენობა გარანტირებული არ არის. შიგნით მოთავსებული თითოეული ნივთის ასაკობრივი ნიშნული და გამოყენების ინსტრუქცია ცალკე შეამოწმე.',
     price_minor: 2990,
     age_label: '4–10 წელი',
-    stock: 25,
+    stock: 0,
     published: true,
     image_url: edition.image,
     images: [],
@@ -23,3 +24,23 @@ export const launchProducts: Product[] = packagingColors.map((packaging, index) 
     packaging,
   };
 });
+
+const bags: Product[] = bagSlugs.map((slug, index) => {
+  const bag = bagDesigns[slug];
+  return {
+    ...boxes[index],
+    id: index === 0 ? 'a301a032-06af-4001-befd-35f98ac0dc03' : 'a301a032-06af-4001-befd-35f98ac0dc04',
+    slug,
+    name: `MyWonderBox — ${bag.title}`,
+    short_description: bag.subtitle,
+    description: 'პარკში იგივე სიურპრიზები გელოდება, რაც შესაბამის ყუთში. განსხვავება მხოლოდ გარე შეფუთვაა. შიგთავსი შეიძლება განსხვავდებოდეს და კონკრეტული ნივთი ან ბრენდი გარანტირებული არ არის.',
+    price_minor: 2490,
+    stock: 50,
+    image_url: bag.image,
+    images: [bag.detail],
+    dimensions: '25 × 32 × 10 სმ',
+    safety_info: boxes[index].safety_info.replace('ყუთი შეიძლება', 'პარკი შეიძლება'),
+  };
+});
+
+export const launchProducts = [...bags, ...boxes];

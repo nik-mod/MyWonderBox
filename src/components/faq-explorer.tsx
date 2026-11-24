@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Search, X } from 'lucide-react';
-import { gsap, useGSAP } from './motion';
 
 const topics = [
   ['all', 'ყველა კითხვა'],
@@ -26,21 +25,7 @@ export function FAQExplorer({ questions }: { questions: FAQ[] }) {
   const [query, setQuery] = useState('');
   const [topic, setTopic] = useState<(typeof topics)[number][0]>('all');
   const [linkedQuestion, setLinkedQuestion] = useState('');
-  const root = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
-  const { contextSafe } = useGSAP({ scope: root });
-  const animateAnswer = contextSafe((details: HTMLDetailsElement) => {
-    const answer = details.querySelector('.faq-answer');
-    if (!answer) return;
-    gsap.killTweensOf(answer);
-    if (!details.open || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      gsap.set(answer, { clearProps: 'transform,opacity' });
-      return;
-    }
-    gsap.fromTo(answer, { y: -5, opacity: .58 }, {
-      y: 0, opacity: 1, duration: .26, ease: 'power2.out', clearProps: 'transform,opacity',
-    });
-  });
 
   useEffect(() => {
     const openFromHash = () => {
@@ -79,7 +64,7 @@ export function FAQExplorer({ questions }: { questions: FAQ[] }) {
   };
 
   return (
-    <div className="faq-explorer" ref={root}>
+    <div className="faq-explorer">
       <div className="faq-search">
         <Search size={19} aria-hidden="true" />
         <input ref={input} type="search" value={query} onChange={event => setQuery(event.target.value)}
@@ -96,7 +81,7 @@ export function FAQExplorer({ questions }: { questions: FAQ[] }) {
       <p className="sr-only" role="status">{visible.length} კითხვა</p>
       <div className="faq-list prose">
         {visible.map(({ id, question, answer }) => (
-          <details id={id} key={id} onToggle={event => animateAnswer(event.currentTarget)}>
+          <details id={id} key={id}>
             <summary>{question}</summary>
             <div className="faq-answer"><p>{answer}</p></div>
           </details>

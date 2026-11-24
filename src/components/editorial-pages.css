@@ -8,7 +8,6 @@
   overflow-wrap: normal;
 }
 
-.about-edition .about-lead-copy .button { min-height: 48px; }
 
 .about-edition .about-lead .edition-preview-photo {
   display: grid;
@@ -119,8 +118,7 @@
 }
 .contact-guide .contact-phone {
   font-variant-numeric: tabular-nums;
-  font-size: clamp(14px, 2vw, 17px);
-  min-height: 48px;
+  font-size: clamp(16px, 1.8vw, 20px);
   gap: 12px;
   padding-inline: 17px;
   white-space: nowrap;
@@ -133,7 +131,7 @@
   min-height: 46px;
   place-items: center;
   border: 1px solid #fff4dfa0;
-  border-radius: 5px;
+  border-radius: var(--control-radius);
   background: transparent;
   color: #fff4df;
   transition: background .2s, color .2s;
@@ -156,6 +154,7 @@
   justify-items: start;
 }
 .contact-guide .contact-guide-body > section p { margin-bottom: 15px; }
+.contact-guide .contact-guide-body > section .text-link { font-size: var(--text-label); }
 .contact-guide .contact-guides a { min-height: 79px; }
 
 .information-reading > .page-header.policy-hero {

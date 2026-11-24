@@ -6,6 +6,7 @@ import { messengerOrdering } from '@/lib/preview-copy';
 import { howSteps } from './how-content';
 import { JourneyGlints, JourneyToys } from './journey-toys';
 import { allowMotion, gsap, ScrollTrigger, useGSAP } from './motion';
+import { prefersLightweightMode } from './device-performance';
 import './how-journey.css';
 
 const chapters = [
@@ -37,11 +38,10 @@ export function HowJourney() {
     const page = root.current, video = videoRef.current;
     const stage = page?.querySelector<HTMLElement>('.journey-stage');
     if (!page || !stage || !video) return;
+    if (prefersLightweightMode()) { setMode('still'); return; }
     const media = gsap.matchMedia();
     media.add('(prefers-reduced-motion: reduce), (max-height: 649px)', () => setMode('still'));
     media.add(allowMotion + ' and (min-height: 650px)', context => {
-      const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-      if (connection?.saveData || connection?.effectiveType?.endsWith('2g')) { setMode('still'); return; }
       setMode('loading');
       setActive(0);
       let disposed = false, failed = false, ready = false;

@@ -18,7 +18,7 @@ export const productSchema = z.object({
   description:z.string().trim().min(10).max(6000),short_description:z.string().trim().min(5).max(300),
   price_minor:z.coerce.number().int().min(1).max(10000000),stock:z.coerce.number().int().min(0).max(100000),
   age_label:z.string().trim().min(1).max(60),dimensions:z.string().max(120),safety_info:z.string().trim().min(5).max(2000),
-  image_url:z.url().refine(url => url.startsWith('https://'), 'HTTPS required'),
+  image_url:z.string().refine(url => /^\/brand\/mywonderbox\/[a-z0-9-]+\.webp$/.test(url) || (z.url().safeParse(url).success && url.startsWith('https://')), 'HTTPS or bundled product image required'),
   packaging:z.enum(['navy-yellow','pink-berry']).nullable().optional(),
   published:z.boolean(),
 });

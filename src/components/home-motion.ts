@@ -1,11 +1,12 @@
 import type { RefObject } from 'react';
 import { useHeroMotion } from './hero-motion';
 import { allowMotion, editorialEase, gsap, useGSAP } from './motion';
+import { prefersLightweightMode } from './device-performance';
 
 export function useHomeMotion(root: RefObject<HTMLElement | null>) {
   useHeroMotion(root);
   useGSAP(() => {
-    if (!root.current) return;
+    if (!root.current || prefersLightweightMode()) return;
     const media = gsap.matchMedia(root.current);
     media.add(allowMotion, () => {
       gsap.fromTo('.story-edition-copy', { y: 18, opacity: .78 }, {

@@ -9,6 +9,7 @@ import type { Packaging, Product } from '@/lib/types';
 import { BoxMark } from './brand';
 import { PackagingPhoto } from './packaging-photo';
 import { ProductGrid } from './products';
+import { canPurchase } from '@/lib/gift-bags';
 
 const sortOptions = [
   { value: '', label: 'რეკომენდებული' },
@@ -163,10 +164,11 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
   });
   if (sort.value === 'price-up') displayed.sort((a, b) => a.price_minor - b.price_minor);
   if (sort.value === 'price-down') displayed.sort((a, b) => b.price_minor - a.price_minor);
+  if (!sort.value) displayed.sort((a, b) => Number(canPurchase(b)) - Number(canPurchase(a)));
 
   const chips: { key: FilterKey; label: string }[] = [];
   if (query) chips.push({ key: 'q', label: `„${query}“` });
-  if (packaging) chips.push({ key: 'packaging', label: packagingDesigns[packaging].title });
+  if (packaging) chips.push({ key: 'packaging', label: packagingDesigns[packaging].title.replace('ყუთი ', '') });
   if (age) chips.push({ key: 'age', label: age });
   const facetCount = Number(Boolean(packaging)) + Number(Boolean(age));
   const clear = () => {
@@ -176,8 +178,8 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
   };
 
   return (
-    <section className="shop-catalog" aria-label="ყუთების კატალოგი">
-      <div className="shop-quick-filters" role="group" aria-label="აირჩიე ყუთის ტიპი">
+    <section className="shop-catalog" aria-label="პროდუქტების კატალოგი">
+      <div className="shop-quick-filters" role="group" aria-label="აირჩიე ვისთვის ეძებ სიურპრიზს">
         <button type="button" aria-pressed={!packaging} onClick={() => updateQuery({ packaging: '' })}>ყველა</button>
         {colors.map(color => <button type="button" key={color} aria-pressed={packaging === color} onClick={() => updateQuery({ packaging: color })}>
           <Swatch color={color} />{packagingDesigns[color].title.replace('ყუთი ', '')}
@@ -189,18 +191,18 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
           updateQuery({ q: draft.trim().slice(0, 80) });
         }}>
           <Search size={19} aria-hidden="true" />
-          <input ref={search} type="search" aria-label="ყუთების ძიება" placeholder="მოძებნე ყუთი" value={draft}
+          <input ref={search} type="search" aria-label="პროდუქტების ძიება" placeholder="მოძებნე პარკი ან ყუთი" value={draft}
             maxLength={80} onChange={event => setDraft(event.target.value)} autoComplete="off" />
           <button type="submit">ძიება</button>
         </form>
         <ShopMenu name="filters" open={openMenu === 'filters'} label="ფილტრები" indicator={facetCount}
           onToggle={() => setOpenMenu(openMenu === 'filters' ? null : 'filters')}>
           {colors.length > 0 && <fieldset>
-            <legend>ყუთის ტიპი</legend>
-            <label className="shop-option"><input type="radio" name="shop-color" checked={!packaging} onChange={() => updateQuery({ packaging: '' })} /> ყველა ყუთი</label>
+            <legend>ვისთვის</legend>
+            <label className="shop-option"><input type="radio" name="shop-color" checked={!packaging} onChange={() => updateQuery({ packaging: '' })} /> ყველა პროდუქტი</label>
             {colors.map(color => <label className="shop-option" key={color}>
               <input type="radio" name="shop-color" checked={color === packaging} onChange={() => updateQuery({ packaging: color })} />
-              <Swatch color={color} /> {packagingDesigns[color].title}
+              <Swatch color={color} /> {packagingDesigns[color].title.replace('ყუთი ', '')}
             </label>)}
           </fieldset>}
           {visibleAges.length > 0 && <fieldset>
@@ -214,7 +216,7 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
         <ShopMenu name="sort" open={openMenu === 'sort'} label={sort.value ? sort.label : 'დალაგება'}
           onToggle={() => setOpenMenu(openMenu === 'sort' ? null : 'sort')}>
           <fieldset>
-            <legend>ყუთების დალაგება</legend>
+            <legend>პროდუქტების დალაგება</legend>
             {sortOptions.map(option => <label className="shop-option" key={option.value}>
               <input type="radio" name="shop-sort" checked={option.value === sort.value} onChange={() => updateQuery({ sort: option.value })} /> {option.label}
             </label>)}
@@ -222,7 +224,7 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
         </ShopMenu>
       </div>
       <div className="shop-results-bar">
-        <p className="shop-results-count" role="status">{displayed.length} ყუთი</p>
+        <p className="shop-results-count" role="status">{displayed.length} პროდუქტი</p>
         {chips.length > 0 && <ul className="shop-active-filters" aria-label="არჩეული ფილტრები">
           {chips.map(({ key, label }) => <li key={key}>
             <button type="button" aria-label={`${label} — ფილტრის მოხსნა`} onClick={() => {
@@ -237,8 +239,8 @@ function Catalog({ products, params }: { products: Product[]; params: Pick<URLSe
         {displayed.length ? <ProductGrid products={displayed} /> : (
           <div className="shop-no-results">
             <BoxMark />
-            <div><h2>ამ ფილტრებით ყუთი ვერ მოიძებნა</h2><p>შეცვალე საძიებო სიტყვა ან მოხსენი ფილტრები.</p></div>
-            <button type="button" className="button button-navy" onClick={clear}><Package size={17} aria-hidden="true" /> ყველა ყუთის ნახვა</button>
+            <div><h2>ამ ფილტრებით პროდუქტი ვერ მოიძებნა</h2><p>შეცვალე საძიებო სიტყვა ან მოხსენი ფილტრები.</p></div>
+            <button type="button" className="button button-navy" onClick={clear}><Package size={17} aria-hidden="true" /> ყველა პროდუქტის ნახვა</button>
           </div>
         )}
       </div>

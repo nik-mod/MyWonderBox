@@ -11,7 +11,8 @@ if (counts.some(value => !value || !/^\d+$/.test(value) || Number(value) > 10000
 }
 const quote = (value: string) => "'" + value.replaceAll("'", "''") + "'";
 const rows = launchProducts.map((product, index) => {
-  const record = { ...product, stock: Number(counts[index]), sort_order: index,
+  const boxIndex = ['joybox-navy', 'joybox-berry'].indexOf(product.slug);
+  const record = { ...product, stock: boxIndex < 0 ? product.stock : Number(counts[boxIndex]), sort_order: index,
     image_url: new URL(product.image_url, site).href,
     images: product.images.map(image => new URL(image, site).href) };
   return `${quote(JSON.stringify(record))}::jsonb`;
